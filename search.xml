@@ -2,8 +2,158 @@
 <search>
   <entry>
     <title>云上鸿途</title>
-    <url>/2025/01/18/%E4%BA%91%E4%B8%8A%E9%B8%BF%E9%80%94/</url>
-    <content><![CDATA[<p>欢迎各位小伙伴来学习交流，本博客搭建过程中感谢云游君等群友大力支持，有兴趣的小伙伴欢迎加入我们，共同进步！</p>
+    <url>/2025/01/01/%E4%BA%91%E4%B8%8A%E9%B8%BF%E9%80%94/</url>
+    <content><![CDATA[<p>欢迎各位小伙伴来学习交流，本博客搭建过程中感谢云游君等群友大力支持，有兴趣的小伙伴欢迎加入我们，共同进步！<br>(<a href="https://www.yunyoujun.cn/posts/how-to-build-your-site">教你如何从零开始搭建一个属于自己的网站 - 云游君的小站 (yunyoujun.cn)</a>)</p>
 ]]></content>
+      <categories>
+        <category>Life</category>
+      </categories>
+      <tags>
+        <tag>Develop</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络与服务指令笔记</title>
+    <url>/2025/01/01/%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E4%B8%8E%E5%BA%94%E7%94%A8/</url>
+    <content><![CDATA[<!-- 包含我常用的操作指令，比较杂乱，一直在整理 -->
+
+
+<h2 id="CentOS改名"><a href="#CentOS改名" class="headerlink" title="CentOS改名"></a>CentOS改名</h2><ol>
+<li><code>Centos6</code>修改主机名：修改<code>/etc/sysconfig/network</code>文件;</li>
+<li><code>Centos7</code>修改主机名：修改<code>/etc/hostname</code>文件;</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/hostname </span><br></pre></td></tr></table></figure>
+
+<h2 id="安装wget指令"><a href="#安装wget指令" class="headerlink" title="安装wget指令"></a>安装wget指令</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo yum install wget</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="vim命令配置"><a href="#vim命令配置" class="headerlink" title="vim命令配置"></a>vim命令配置</h2><p>1、更新yum</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum update</span><br></pre></td></tr></table></figure>
+
+<p>2、查看是否已经安装了vim</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rpm -qa|grep vim</span><br></pre></td></tr></table></figure>
+
+
+<p>如果有以下结果输出，则已经安装了vim</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim-filesystem-7.4.160-4.el7.x86_64</span><br><span class="line">vim-minimal-7.4.160-4.el7.x86_64</span><br><span class="line">vim-enhanced-7.4.160-4.el7.x86_64</span><br><span class="line">vim-common-7.4.160-4.el7.x86_64</span><br></pre></td></tr></table></figure>
+
+<p>3、安装vim</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo yum install vim -y</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum -y install vim</span><br></pre></td></tr></table></figure>
+
+<p>4、配置vim</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/vimrc</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set nu          &quot; 设置显示行号</span><br><span class="line">set showmode    &quot; 设置在命令行界面最下面显示当前模式等</span><br><span class="line">set ruler       &quot; 在右下角显示光标所在的行数等信息</span><br><span class="line">set autoindent  &quot; 设置每次单击Enter键后，光标移动到下一行时与上一行的起始字符对齐</span><br><span class="line">syntax on       &quot; 即设置语法检测，当编辑C或者Shell脚本时，关键字会用特殊颜色显示</span><br></pre></td></tr></table></figure>
+
+<h2 id="关机、注销、重启"><a href="#关机、注销、重启" class="headerlink" title="关机、注销、重启"></a>关机、注销、重启</h2><blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">查看进程端口号：netstat -tunlp|grep 端口号 </span><br><span class="line">ss -tnl  查看正在已使用的端口</span><br><span class="line">shutdown -h now 关闭系统(1) 即刻关机</span><br><span class="line">shutdown -h 10 10分钟后关机</span><br><span class="line">shutdown -h 11:00  11:00 关机</span><br><span class="line">shutdown -h +10 预定时间关机（10分钟后关机）</span><br><span class="line">shutdown -c  取消指定时间关机</span><br><span class="line">shutdown -f now 重启</span><br><span class="line">shutdown -r 10  10分钟后重启</span><br><span class="line">shutdown -r 11:00   定时重启</span><br><span class="line">reboot 重启</span><br><span class="line">init 6 重启</span><br><span class="line">init 0 即刻关机</span><br><span class="line">telinit 0 关机</span><br><span class="line">poweroff   立刻关机</span><br><span class="line">halt 关机</span><br><span class="line">sync  buff数据同步到磁盘</span><br><span class="line">logout 退出登录Shell</span><br><span class="line">time 测算一个命令（即程序）的执行时间</span><br><span class="line"></span><br></pre></td></tr></table></figure></blockquote>
+<h2 id="静态ip配置"><a href="#静态ip配置" class="headerlink" title="静态ip配置"></a>静态ip配置</h2><p>第一步：进入存放修改IP地址的目录： </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/sysconfig/network-scripts/ifcfg-ens33</span><br></pre></td></tr></table></figure>
+
+<h3 id="第二步：修改ip地址的文件："><a href="#第二步：修改ip地址的文件：" class="headerlink" title="第二步：修改ip地址的文件："></a>第二步：修改ip地址的文件：</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim ifcfg-ens32</span><br><span class="line">或者是：</span><br><span class="line">vim ifcfg-ens33</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="第五步：重启网络"><a href="#第五步：重启网络" class="headerlink" title="第五步：重启网络"></a>第五步：重启网络</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">systemctl restart network</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">## iptables防火墙配置</span><br><span class="line"></span><br><span class="line">1.操作语法</span><br><span class="line"></span><br><span class="line">yum install iptables-services</span><br><span class="line"></span><br><span class="line">2.操作语法</span><br><span class="line"></span><br><span class="line">systemctl start iptables.service  #启动iptables</span><br><span class="line"></span><br><span class="line">systemctl status iptables          #查看防火墙状态</span><br><span class="line"></span><br><span class="line">sudo systemctl stop firewalld.service    #关闭自带防火墙</span><br><span class="line"></span><br><span class="line">sudo systemctl disable firewalld.service   删除自带防火墙</span><br><span class="line"></span><br><span class="line">sudo systemctl enable iptables.service   #设置iptables开机自启</span><br><span class="line"></span><br><span class="line">ervice iptables save   #开机自启命令</span><br><span class="line"></span><br><span class="line">iptables: Saving firewall rules to /etc/sysconfig/iptables:[ OK ]     #出现这句话代表成功设置</span><br><span class="line"></span><br><span class="line">systemctl restart iptables.service   #重启iptables</span><br></pre></td></tr></table></figure>
+
+<h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">启用/禁用防火墙（开机启动）</span><br><span class="line">systemctl enable firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line"></span><br><span class="line">开启/关闭防火墙</span><br><span class="line">systemctl start firewalld</span><br><span class="line">systemctl stop firewalld</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">查看防火墙状态</span><br><span class="line">systemctl status firewalld</span><br><span class="line"></span><br><span class="line">查看当前防火墙规则</span><br><span class="line">firewall-cmd --list-all</span><br><span class="line"></span><br><span class="line">查看所有的开放服务和端口</span><br><span class="line">firewall-cmd --list-services</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">允许某个端口（例如 80 端口）</span><br><span class="line">firewall-cmd --zone=public --add-port=80/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line">关闭某个端口（例如 80 端口）</span><br><span class="line">firewall-cmd --zone=public --remove-port=80/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line">允许某个服务（例如 HTTP）</span><br><span class="line">firewall-cmd --zone=public --add-service=http --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">	</span><br></pre></td></tr></table></figure>
+
+<h3 id="SELINUX"><a href="#SELINUX" class="headerlink" title="SELINUX"></a>SELINUX</h3><p>查看状态</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sestatus</span><br></pre></td></tr></table></figure>
+
+<p>临时设置 SELinux 为宽松模式（permissive）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo setenforce 0</span><br></pre></td></tr></table></figure>
+
+<p>临时设置 SELinux 为强制模式（enforcing）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setenforce 1</span><br></pre></td></tr></table></figure>
+
+<p>永久更改 SELinux 模式 编辑 <code>/etc/selinux/config</code> 文件，修改 <code>SELINUX</code> 参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/selinux/config</span><br></pre></td></tr></table></figure>
+
+<p>查看 SELinux 当前的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">getenforce</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">vim /etc/yum.repos.d/CentOS-Base.repo</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># CentOS-Base.repo</span><br><span class="line">#</span><br><span class="line"># The mirror system uses the connecting IP address of the client and the</span><br><span class="line"># update status of each mirror to pick mirrors that are updated to and</span><br><span class="line"># geographically close to the client.  You should use this for CentOS updates</span><br><span class="line"># unless you are manually picking other mirrors.</span><br><span class="line">#</span><br><span class="line"># If the mirrorlist= does not work for you, as a fall back you can try the </span><br><span class="line"># remarked out baseurl= line instead.</span><br><span class="line">#</span><br><span class="line">#</span><br><span class="line"> </span><br><span class="line">[base]</span><br><span class="line">name=CentOS-$releasever - Base - mirrors.aliyun.com</span><br><span class="line">failovermethod=priority</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/os/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7</span><br><span class="line"> </span><br><span class="line">#released updates </span><br><span class="line">[updates]</span><br><span class="line">name=CentOS-$releasever - Updates - mirrors.aliyun.com</span><br><span class="line">failovermethod=priority</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/updates/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7</span><br><span class="line"> </span><br><span class="line">#additional packages that may be useful</span><br><span class="line">[extras]</span><br><span class="line">name=CentOS-$releasever - Extras - mirrors.aliyun.com</span><br><span class="line">failovermethod=priority</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/extras/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7</span><br><span class="line"> </span><br><span class="line">#additional packages that extend functionality of existing packages</span><br><span class="line">[centosplus]</span><br><span class="line">name=CentOS-$releasever - Plus - mirrors.aliyun.com</span><br><span class="line">failovermethod=priority</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/centosplus/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7</span><br><span class="line"> </span><br><span class="line">#contrib - packages by Centos Users</span><br><span class="line">[contrib]</span><br><span class="line">name=CentOS-$releasever - Contrib - mirrors.aliyun.com</span><br><span class="line">failovermethod=priority</span><br><span class="line">baseurl=https://mirrors.aliyun.com/centos-vault/7.9.2009/contrib/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=https://mirrors.aliyun.com/centos-vault/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum clean all &amp;&amp; yum makecache</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>查看正在运行的容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p>启动 &#x2F; 停止容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker start/stop &lt;container_id&gt;</span><br></pre></td></tr></table></figure>
+
+<p>删除容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker rm &lt;container_id&gt;</span><br></pre></td></tr></table></figure>
+
+<p>查看本地镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h3><p>启动 Compose 应用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose up</span><br></pre></td></tr></table></figure>
+
+<p>停止 Compose 应用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker-compose down</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Docker-源"><a href="#Docker-源" class="headerlink" title="Docker 源"></a>Docker 源</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo vim /etc/docker/daemon.json</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [</span><br><span class="line">    &quot;https://dockerpull.org&quot;,</span><br><span class="line">    &quot;https://hub.geekery.cn&quot;,</span><br><span class="line">    &quot;https://docker.1ms.run&quot;,</span><br><span class="line">    &quot;https://docker.1panel.dev&quot;,</span><br><span class="line">    &quot;https://docker.foreverlink.love&quot;,</span><br><span class="line">    &quot;https://docker.fxxk.dedyn.io&quot;,</span><br><span class="line">    &quot;https://dytt.online&quot;,</span><br><span class="line">    &quot;https://func.ink&quot;,</span><br><span class="line">    &quot;https://lispy.org&quot;,</span><br><span class="line">    &quot;https://docker.xiaogenban1993.com&quot;,</span><br><span class="line">    &quot;https://docker.xn--6oq72ry9d5zx.cn&quot;,</span><br><span class="line">    &quot;https://docker.zhai.cm&quot;,</span><br><span class="line">    &quot;https://docker.5z5f.com&quot;,</span><br><span class="line">    &quot;https://a.ussh.net&quot;,</span><br><span class="line">    &quot;https://docker.cloudlayer.icu&quot;,</span><br><span class="line">    &quot;https://docker.linkedbus.com&quot;,</span><br><span class="line">    &quot;https://hub.littlediary.cn&quot;,</span><br><span class="line">    &quot;https://hub.crdz.gq&quot;,</span><br><span class="line">    &quot;https://docker.unsee.tech&quot;,</span><br><span class="line">    &quot;https://docker.kejilion.pro&quot;,</span><br><span class="line">    &quot;https://registry.dockermirror.com&quot;,</span><br><span class="line">    &quot;https://hub.rat.dev&quot;,</span><br><span class="line">    &quot;https://dhub.kubesre.xyz&quot;,</span><br><span class="line">    &quot;https://docker.nastool.de&quot;,</span><br><span class="line">    &quot;https://docker.udayun.com&quot;,</span><br><span class="line">    &quot;https://docker.rainbond.cc&quot;,</span><br><span class="line">    &quot;https://docker.1panelproxy.com&quot;,</span><br><span class="line">    &quot;https://atomhub.openatom.cn&quot;,</span><br><span class="line">    &quot;https://docker.m.daocloud.io&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br><span class="line"># 启动 docker</span><br><span class="line"> </span><br><span class="line">systemctl enable docker</span><br><span class="line"># 设置 docker 开机自启动</span><br><span class="line"> </span><br><span class="line">systemctl restart docker</span><br><span class="line"># 重启 docker</span><br><span class="line"></span><br><span class="line">查看正在运行的容器：</span><br><span class="line">docker ps</span><br><span class="line"></span><br><span class="line">docker stop 容器名字</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="安装图形化界面"><a href="#安装图形化界面" class="headerlink" title="安装图形化界面"></a>安装图形化界面</h2><p><strong>更新系统</strong>：确保你的系统是最新的，通过运行以下命令进行更新：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo yum update</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装 GNOME 桌面</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo yum -y groups install &quot;GNOME Desktop&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置桌面环境</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &quot;exec gnome-session&quot; &gt;&gt; ~/.xinitrc</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动 GUI</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">startx</span><br></pre></td></tr></table></figure>
+
+<p><strong>设置 GUI 为默认</strong>：为了确保在登录时自动启动图形界面，执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">systemctl set-default graphical.target</span><br></pre></td></tr></table></figure>
+
+<p><strong>重启</strong>：最后，重启系统以使更改生效。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+
+
+
+]]></content>
+      <categories>
+        <category>Course</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>实用指令</tag>
+      </tags>
   </entry>
 </search>
