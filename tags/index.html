@@ -37,7 +37,7 @@ IconifyProviders = {
   const wordcloud_canvas = document.getElementById('wordcloud-canvas')
   wordcloud_canvas.width = document.querySelector('#page').clientWidth - 16
   wordcloud_canvas.height = 350
-  let wordcloud_config = {"list":[["Develop",1.1,"/tags/Develop/"],["Interest",1.1,"/tags/Interest/"],["实用指令",1.1,"/tags/实用指令/"],["Linux",1.1,"/tags/Linux/"],["渗透测试",1.1,"/tags/渗透测试/"],["Web",1.1,"/tags/Web/"]],"fontFamily":"'PingFang SC', 'Microsoft YaHei', Roboto, Arial, sans-serif","fontWeight":400,"gridSize":10,"weightFactor":13,"backgroundColor":"transparent","color":"random-dark"}
+  let wordcloud_config = {"list":[["实用指令",1.1,"/tags/实用指令/"],["Linux",1.1,"/tags/Linux/"],["Interest",1.1,"/tags/Interest/"],["Develop",1.1,"/tags/Develop/"],["渗透测试",1.1,"/tags/渗透测试/"],["Web",1.1,"/tags/Web/"]],"fontFamily":"'PingFang SC', 'Microsoft YaHei', Roboto, Arial, sans-serif","fontWeight":400,"gridSize":10,"weightFactor":13,"backgroundColor":"transparent","color":"random-dark"}
   wordcloud_config.hover = function(item, dimension){
     if (!dimension) {
       wordbox.hidden = true
@@ -59,7 +59,7 @@ function loadWordcloud() {
   }
 }
 
-loadWordcloud();</script></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>若您想及时得到回复提醒，建议直接在群里Call我。</span><br><span>若没有本文 Issue，那你就不要问了。</span><br><a class="hty-button hty-button--raised" id="github-issues" target="_blank" rel="noopener" href="https://github.com/RoninOnTrip/RoninOnTrip.github.io/issues?q=is:issue+标签">GitHub Issues</a></div><div class="toggle-comment-system" style="margin: 1rem auto"><a class="toggle-comment-btn hty-button hty-button--raised text-uppercase" onclick="showComment(this.dataset.target)">愁客叶舟里</a><style> {
+loadWordcloud();</script></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>若您想及时得到回复提醒，建议直接在群里Call我。</span><br><span>若没有本文 Issue，欢迎你做第一位！</span><br><a class="hty-button hty-button--raised" id="github-issues" target="_blank" rel="noopener" href="https://github.com/RoninOnTrip/RoninOnTrip.github.io/issues?q=is:issue+标签">GitHub Issues</a></div><div class="toggle-comment-system" style="margin: 1rem auto"><a class="toggle-comment-btn hty-button hty-button--raised text-uppercase" onclick="showComment(this.dataset.target)">愁客叶舟里</a><style> {
   display: none;
 }</style><a class="toggle-comment-btn hty-button hty-button--raised text-uppercase" onclick="showComment(this.dataset.target)">夕阳花水时</a><script>function hideAllComment() {
   //- hide all
